@@ -60,3 +60,11 @@ export type NewTitle = Pick<
   TrackedTitle,
   "tmdbId" | "mediaType" | "name" | "posterPath" | "totalEpisodes" | "watched"
 >;
+
+export type Category = {
+  id: number;
+  name: string;
+  position: number;
+};
+
+export type NewCategory = Omit<Category, "id">;
