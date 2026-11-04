@@ -32,3 +32,31 @@ export type SeasonSummary = {
   name: string;
   episodeCount: number;
 };
+
+export type TvDetails = {
+  tmdbId: number;
+  name: string;
+  posterPath: string | null;
+  overview: string;
+  seasons: SeasonSummary[];
+  totalEpisodes: number;
+  nextEpisode: NextEpisode | null;
+};
+
+export type MovieDetails = {
+  tmdbId: number;
+  name: string;
+  posterPath: string | null;
+  overview: string;
+  runtimeMinutes: number | null;
+  releaseDate: string | null;
+};
+
+export type LoadedDetails =
+  | { mediaType: "tv"; details: TvDetails }
+  | { mediaType: "movie"; details: MovieDetails };
+
+export type NewTitle = Pick<
+  TrackedTitle,
+  "tmdbId" | "mediaType" | "name" | "posterPath" | "totalEpisodes" | "watched"
+>;
