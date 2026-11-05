@@ -56,3 +56,12 @@ export function isInLibrary(
 ) {
   return categories.some(categories => categories.titleId === titleId);
 }
+
+export function categoriesForTitle(
+  categories: readonly TitleCategory[],
+  titleId: number,
+) {
+  return categories
+    .filter(categories => categories.titleId === titleId)
+    .map(category => category.categoryId);
+}
