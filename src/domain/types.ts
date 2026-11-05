@@ -68,3 +68,8 @@ export type Category = {
 };
 
 export type NewCategory = Omit<Category, "id">;
+
+export type TitleCategory = {
+  titleId: number;
+  categoryId: number;
+};
