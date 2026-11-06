@@ -50,18 +50,13 @@ export function removeCategory(
     .map((category, i) => ({ ...category, position: i }));
 }
 
+/**
+ * Checks if a title is in the library, meaning it is in at least one category.
+ * A title that is in no category is hidden, but its progress is kept.
+ */
 export function isInLibrary(
   categories: readonly TitleCategory[],
   titleId: number,
 ) {
-  return categories.some(categories => categories.titleId === titleId);
-}
-
-export function categoriesForTitle(
-  categories: readonly TitleCategory[],
-  titleId: number,
-) {
-  return categories
-    .filter(categories => categories.titleId === titleId)
-    .map(category => category.categoryId);
+  return categories.some(link => link.titleId === titleId);
 }

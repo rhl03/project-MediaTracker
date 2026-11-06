@@ -1,10 +1,11 @@
 import {
   createCategory,
+  isInLibrary,
   removeCategory,
   renameCategory,
   reorderCategories,
 } from "../category";
-import type { Category } from "../types";
+import type { Category, TitleCategory } from "../types";
 
 function makeCategory(overrides: Partial<Category>): Category {
   const defaults: Category = {
@@ -65,5 +66,25 @@ describe("removeCategory", () => {
 
   test("returns the same list when no category has the id (99)", () => {
     expect(removeCategory(categories, 99)).toEqual(categories);
+  });
+});
+
+describe("isInLibrary", () => {
+  const links: TitleCategory[] = [
+    { titleId: 10, categoryId: 1 },
+    { titleId: 10, categoryId: 3 },
+    { titleId: 20, categoryId: 2 },
+  ];
+
+  test("returns true for title 10 (in Watching and Done)", () => {
+    expect(isInLibrary(links, 10)).toBe(true);
+  });
+
+  test("returns false for title 30 (only other titles have links)", () => {
+    expect(isInLibrary(links, 30)).toBe(false);
+  });
+
+  test("returns false when there are no links at all", () => {
+    expect(isInLibrary([], 10)).toBe(false);
   });
 });
