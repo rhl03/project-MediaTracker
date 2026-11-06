@@ -87,3 +87,11 @@ export type TitleCategory = {
   titleId: number;
   categoryId: number;
 };
+
+export type SearchResult = {
+  tmdbId: number;
+  mediaType: MediaType;
+  name: string;
+  year: string | null;
+  posterPath: string | null;
+};
