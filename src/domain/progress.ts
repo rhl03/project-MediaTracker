@@ -7,6 +7,7 @@ import {
   TrackedTitle,
 } from "./types";
 
+/** Short month names for shortDate, January first. */
 const MONTHS = [
   "Jan",
   "Feb",
@@ -22,10 +23,7 @@ const MONTHS = [
   "Dec",
 ];
 
-/**
- * Returns the watched percent (0–100), rounded and capped at 100.
- * Returns 0 when total is 0 or less.
- */
+/** Watched percent (0–100), rounded and capped at 100. 0 when total is 0. */
 export function progressPercent(watched: number, total: number): number {
   if (total <= 0) {
     return 0;
@@ -33,10 +31,7 @@ export function progressPercent(watched: number, total: number): number {
   return Math.min(Math.round((watched / total) * 100), 100);
 }
 
-/**
- * Returns the furthest watched episode, or null if the list is empty.
- * A later season wins first, then the higher episode (S2E1 beats S1E10).
- */
+/** The furthest watched episode (later season wins), or null if none. */
 export function latestEpisode(
   watched: readonly LatestEpisodeType[],
 ): LatestEpisodeType | null {
@@ -54,9 +49,7 @@ export function latestEpisode(
   return latest;
 }
 
-/**
- * Turns an episode into a short label like "S2 E5", or "not started" if there is none.
- */
+/** A label like "S2 E5", or "Not started" when there is no episode. */
 export function progressLabel(latest: LatestEpisodeType | null): string {
   if (latest === null) {
     return "Not started";
@@ -64,10 +57,7 @@ export function progressLabel(latest: LatestEpisodeType | null): string {
   return `S${latest.seasonNumber} E${latest.episodeNumber}`;
 }
 
-/**
- * Picks the badge for a title's poster: a check mark for a watched movie or a
- * fully watched series, otherwise the watched percent (nothing at 0%).
- */
+/** The poster badge: check when done, percent otherwise, nothing at 0%. */
 export function progressBadge(title: TrackedTitle): Badge {
   if (title.mediaType === "movie") {
     return title.watched ? { kind: "check" } : { kind: "none" };
@@ -82,10 +72,7 @@ export function progressBadge(title: TrackedTitle): Badge {
   return { kind: "percent", value: percent };
 }
 
-/**
- * Returns every episode from S1 E1 up to and including the target, so marking
- * an episode also marks all earlier ones. Seasons after the target are skipped.
- */
+/** Every episode from S1 E1 up to and including the target. */
 export function episodesUpTo(
   seasons: readonly SeasonSummary[],
   target: LatestEpisodeType,
@@ -106,10 +93,7 @@ export function episodesUpTo(
   return refs;
 }
 
-/**
- * Returns the episode to watch next: S1 E1 when nothing is watched, the next
- * episode in the same season, or E1 of the next season. Null when done.
- */
+/** The episode to watch next, or null when the series is done. */
 export function nextToWatch(
   seasons: readonly SeasonSummary[],
   watched: readonly LatestEpisodeType[],
@@ -138,7 +122,7 @@ export function nextToWatch(
     : null;
 }
 
-/** Returns a date as "YYYY-MM-DD" in the phone's local time, e.g. "2026-11-03". */
+/** A date as "YYYY-MM-DD" in the phone's local time. */
 export function isoDate(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -146,7 +130,7 @@ export function isoDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** Turns "2026-11-03" into "3 Nov". Returns null when the text isn't a date. */
+/** "2026-11-03" → "3 Nov". Null when the text isn't a date. */
 export function shortDate(iso: string): string | null {
   const [, month, day] = iso.split("-");
   const monthName = MONTHS[Number(month) - 1];
@@ -156,15 +140,12 @@ export function shortDate(iso: string): string | null {
   return `${Number(day)} ${monthName}`;
 }
 
-/** True when the episode aired before today. No date counts as not aired. */
+/** True when the episode aired before today. No date = not aired. */
 export function isAired(airDate: string | null, today: string): boolean {
   return airDate !== null && airDate < today;
 }
 
-/**
- * Returns the text for the next episode that hasn't aired yet, e.g.
- * "Next: S3 E5 · 7 Nov". Null when there is none or it has already aired.
- */
+/** Text like "Next: S3 E5 · 7 Nov", or null when already aired or none. */
 export function formatNextEpisode(
   next: NextEpisode | null,
   today: string,
@@ -179,10 +160,7 @@ export function formatNextEpisode(
   return `Next: S${next.seasonNumber} E${next.episodeNumber} · ${date}`;
 }
 
-/**
- * Returns only the episodes that aired before today, as season + episode.
- * Used by "Mark as Done", so episodes that haven't aired stay unwatched.
- */
+/** Only the episodes that aired before today. Used by "Mark as Done". */
 export function airedEpisodes(
   episodes: readonly Episode[],
   today: string,

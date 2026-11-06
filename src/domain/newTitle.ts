@@ -1,10 +1,6 @@
 import type { LoadedDetails, NewTitle } from "./types";
 
-/**
- * Turns the details loaded from TMDB into a new title to save when it is added.
- * A series gets its total episodes; a movie gets 0, since it uses "watched".
- * Every new title starts as not watched.
- */
+/** Turns loaded TMDB details into a new title. Movies get 0 episodes. */
 export function toNewTitle(loaded: LoadedDetails): NewTitle {
   switch (loaded.mediaType) {
     case "tv":
