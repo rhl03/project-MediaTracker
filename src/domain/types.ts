@@ -88,6 +88,7 @@ export type TitleCategory = {
   categoryId: number;
 };
 
+/** One search hit from TMDB. year is null when TMDB has no date. */
 export type SearchResult = {
   tmdbId: number;
   mediaType: MediaType;
