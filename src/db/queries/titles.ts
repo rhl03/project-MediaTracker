@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
-import { titlesTable } from "./schema";
-import type { AppDb } from "./types";
+import { titlesTable } from "../schema";
+import type { AppDb } from "../types";
 
 /** Returns the title with this TMDB id and type, or undefined if it isn't saved. */
 export async function getTitle(

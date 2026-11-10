@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMigrations } from "drizzle-orm/op-sqlite/migrator";
 import migrations from "./drizzle/migrations";
 import { db } from "./src/db/database";
-import { ensureDefaultCategory } from "./src/db/categories";
+import { ensureDefaultCategory } from "./src/db/queries/categories";
 import { useAppFocus } from "./src/hooks/useAppFocus";
 import { useOnlineStatus } from "./src/hooks/useOnlineStatus";
 import { TestScreen } from "./src/screens/TestScreen";

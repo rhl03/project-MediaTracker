@@ -1,6 +1,6 @@
 import { ensureDefaultCategory } from "../categories";
-import { categoriesTable } from "../schema";
-import { makeDb } from "../makeDb";
+import { categoriesTable } from "../../schema";
+import { makeDb } from "../../test/makeDb";
 
 describe("ensureDefaultCategory", () => {
   test("creates Library at position 0 for an empty database", async () => {

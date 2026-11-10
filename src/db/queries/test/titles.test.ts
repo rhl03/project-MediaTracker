@@ -2,7 +2,7 @@ import {
   categoriesTable,
   titleCategoriesTable,
   watchedEpisodesTable,
-} from "../schema";
+} from "../../schema";
 import {
   addTitle,
   getTitle,
@@ -10,7 +10,7 @@ import {
   removeTitle,
   updateTotalEpisodes,
 } from "../titles";
-import { makeDb } from "../makeDb";
+import { makeDb } from "../../test/makeDb";
 
 type TitleInput = Parameters<typeof addTitle>[1];
 

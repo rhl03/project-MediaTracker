@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
-import type { LatestEpisodeType } from "../domain/types";
-import { titlesTable, watchedEpisodesTable } from "./schema";
-import type { AppDb } from "./types";
+import type { LatestEpisodeType } from "../../domain/types";
+import { titlesTable, watchedEpisodesTable } from "../schema";
+import type { AppDb } from "../types";
 
 /** Marks one episode as watched and saves when the title was last watched. */
 export async function markEpisode(

@@ -9,7 +9,7 @@ import App from "../App";
 
 jest.mock("@react-native-community/netinfo", () => mockRNCNetInfo);
 jest.mock("../src/db/database", () => ({ db: {} }));
-jest.mock("../src/db/categories", () => ({
+jest.mock("../src/db/queries/categories", () => ({
   ensureDefaultCategory: () => Promise.resolve(),
 }));
 jest.mock("drizzle-orm/op-sqlite/migrator", () => ({

@@ -1,4 +1,4 @@
-import { watchedEpisodesTable } from "../schema";
+import { watchedEpisodesTable } from "../../schema";
 import {
   listWatched,
   markEpisode,
@@ -7,7 +7,7 @@ import {
   unmarkEpisode,
 } from "../episodes";
 import { addTitle, getTitle } from "../titles";
-import { makeDb } from "../makeDb";
+import { makeDb } from "../../test/makeDb";
 
 type TitleInput = Parameters<typeof addTitle>[1];
 

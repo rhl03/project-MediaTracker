@@ -6,7 +6,7 @@ import {
   titlesTable,
   watchedEpisodesTable,
 } from "../schema";
-import { makeDb } from "../makeDb";
+import { makeDb } from "./makeDb";
 
 type NewTitleRow = typeof titlesTable.$inferInsert;
 
