@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { titlesTable } from "./schema";
-import { AppDb } from "./types";
+import type { AppDb } from "./types";
 
 /** Returns the title with this TMDB id and type, or undefined if it isn't saved. */
 export async function getTitle(
@@ -31,4 +31,33 @@ export async function addTitle(db: AppDb, title: TitleInput): Promise<number> {
     throw new Error(`Title ${title.tmdbId} was not saved`);
   }
   return saved.id;
+}
+
+/** Saves a new episode count for a series, e.g. when TMDB has new episodes. */
+export async function updateTotalEpisodes(
+  db: AppDb,
+  id: number,
+  totalEpisodes: number,
+) {
+  await db
+    .update(titlesTable)
+    .set({ totalEpisodes: totalEpisodes })
+    .where(eq(titlesTable.id, id));
+}
+
+/** Marks a movie as watched or not watched. */
+export async function markMovieWatched(
+  db: AppDb,
+  id: number,
+  watched: boolean,
+) {
+  await db
+    .update(titlesTable)
+    .set({ watched: watched })
+    .where(eq(titlesTable.id, id));
+}
+
+/** Deletes a title; its watched episodes and category links are deleted with it. */
+export async function removeTitle(db: AppDb, id: number) {
+  await db.delete(titlesTable).where(eq(titlesTable.id, id));
 }

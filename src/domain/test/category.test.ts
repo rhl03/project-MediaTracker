@@ -1,8 +1,8 @@
 import {
+  canRemoveCategory,
   createCategory,
   isInLibrary,
   removeCategory,
-  renameCategory,
   reorderCategories,
 } from "../category";
 import type { Category, TitleCategory } from "../types";
@@ -30,18 +30,6 @@ describe("createCategory", () => {
   });
 });
 
-describe("renameCategory", () => {
-  test("renames Anime to Drama and keeps id 4 and position 2", () => {
-    const category = makeCategory({ id: 4, name: "Anime", position: 2 });
-
-    expect(renameCategory(category, "Drama")).toEqual({
-      id: 4,
-      name: "Drama",
-      position: 2,
-    });
-  });
-});
-
 describe("reorderCategories", () => {
   test("moves Done to the front: Done 0, Watching 1, Watchlist 2", () => {
     expect(reorderCategories(categories, 3, 0)).toEqual([
@@ -56,6 +44,20 @@ describe("reorderCategories", () => {
   });
 });
 
+describe("canRemoveCategory", () => {
+  test("returns true for three categories", () => {
+    expect(canRemoveCategory(categories)).toBe(true);
+  });
+
+  test("returns false for the last category", () => {
+    expect(canRemoveCategory([watching])).toBe(false);
+  });
+
+  test("returns false when there are no categories", () => {
+    expect(canRemoveCategory([])).toBe(false);
+  });
+});
+
 describe("removeCategory", () => {
   test("removes Watchlist from the middle: Watching 0, Done 1", () => {
     expect(removeCategory(categories, 2)).toEqual([
@@ -66,6 +68,10 @@ describe("removeCategory", () => {
 
   test("returns the same list when no category has the id (99)", () => {
     expect(removeCategory(categories, 99)).toEqual(categories);
+  });
+
+  test("keeps the last category (Watching) when asked to remove it", () => {
+    expect(removeCategory([watching], 1)).toEqual([watching]);
   });
 });
 

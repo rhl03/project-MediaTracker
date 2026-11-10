@@ -5,11 +5,6 @@ export function createCategory(name: string, position: number): NewCategory {
   return { name, position };
 }
 
-/** Gives a category a new name. The id and position stay the same. */
-export function renameCategory(category: Category, name: string): Category {
-  return { ...category, name };
-}
-
 /**
  * Moves a category to a new place and renumbers all positions: 0, 1, 2…
  * Returns the list unchanged if the id isn't found.
@@ -31,11 +26,21 @@ export function reorderCategories(
   return result.map((category, position) => ({ ...category, position }));
 }
 
-/** Removes a category and renumbers the rest. Its links are removed by the database. */
+/** True when a category may be deleted: the last one always has to stay. */
+export function canRemoveCategory(categories: readonly Category[]): boolean {
+  return categories.length > 1;
+}
+
+/**
+ * Removes a category and renumbers the rest. Its links are removed by the database.
+ * Returns the list unchanged if it's the last category.
+ */
 export function removeCategory(
   categories: readonly Category[],
   id: number,
 ): Category[] {
+  if (!canRemoveCategory(categories)) return [...categories];
+
   return categories
     .filter(category => category.id !== id)
     .map((category, i) => ({ ...category, position: i }));
@@ -43,8 +48,8 @@ export function removeCategory(
 
 /** True when the title is in at least one category. */
 export function isInLibrary(
-  categories: readonly TitleCategory[],
+  links: readonly TitleCategory[],
   titleId: number,
-) {
-  return categories.some(link => link.titleId === titleId);
+): boolean {
+  return links.some(link => link.titleId === titleId);
 }
