@@ -1,6 +1,4 @@
-import Database from "better-sqlite3";
 import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import {
   categoriesTable,
@@ -8,13 +6,7 @@ import {
   titlesTable,
   watchedEpisodesTable,
 } from "../schema";
-
-/** Creates an in-memory database and runs the migrations, like the app does at startup. */
-function makeDb() {
-  const db = drizzle({ client: new Database(":memory:") });
-  migrate(db, { migrationsFolder: "drizzle" });
-  return db;
-}
+import { makeDb } from "../makeDb";
 
 type NewTitleRow = typeof titlesTable.$inferInsert;
 

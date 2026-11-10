@@ -9,12 +9,15 @@ import App from "../App";
 
 jest.mock("@react-native-community/netinfo", () => mockRNCNetInfo);
 jest.mock("../src/db/database", () => ({ db: {} }));
+jest.mock("../src/db/categories", () => ({
+  ensureDefaultCategory: () => Promise.resolve(),
+}));
 jest.mock("drizzle-orm/op-sqlite/migrator", () => ({
   useMigrations: () => ({ success: true }),
 }));
 
 test("renders correctly", async () => {
-  await ReactTestRenderer.act(() => {
+  await ReactTestRenderer.act(async () => {
     ReactTestRenderer.create(<App />);
   });
 });
