@@ -8,6 +8,7 @@ import {
   unique,
 } from "drizzle-orm/sqlite-core";
 
+/** User-made lists shown as Home tabs, ordered by position. */
 export const categoriesTable = sqliteTable("categories", {
   id: integer().primaryKey(),
   name: text().notNull(),
@@ -51,3 +52,27 @@ export const watchedEpisodesTable = sqliteTable(
     }),
   ],
 );
+
+/** Links titles to categories. A title can be in several; links go when either side is deleted. */
+export const titleCategoriesTable = sqliteTable(
+  "title_categories",
+  {
+    titleId: integer("title_id")
+      .notNull()
+      .references(() => titlesTable.id, { onDelete: "cascade" }),
+    categoryId: integer("category_id")
+      .notNull()
+      .references(() => categoriesTable.id, { onDelete: "cascade" }),
+  },
+  table => [
+    primaryKey({
+      columns: [table.titleId, table.categoryId],
+    }),
+  ],
+);
+
+/** App settings as key–value pairs. */
+export const settingsTable = sqliteTable("settings", {
+  key: text().primaryKey(),
+  value: text().notNull(),
+});
