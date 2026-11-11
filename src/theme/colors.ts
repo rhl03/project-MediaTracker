@@ -14,6 +14,9 @@ export const colors = {
   // #a8c7fa - active filter, badges, links
   primary: "#a8c7fa",
 
+  // #2a3550 - selected card background
+  primaryContainer: "#2a3550",
+
   // #ffffff - main text
   text: "#ffffff",
 

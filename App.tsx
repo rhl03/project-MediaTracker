@@ -1,18 +1,20 @@
+import * as React from "react";
 import { useEffect, useState } from "react";
-import { StatusBar, Text, View } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Text, View } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
 import { useMigrations } from "drizzle-orm/op-sqlite/migrator";
 import migrations from "./drizzle/migrations";
 import { db } from "./src/db/database";
 import { ensureDefaultCategory } from "./src/db/queries/categories";
 import { useAppFocus } from "./src/hooks/useAppFocus";
 import { useOnlineStatus } from "./src/hooks/useOnlineStatus";
-import { TestScreen } from "./src/screens/TestScreen";
+import { RootNavigator } from "./src/navigation/RootNavigator";
 
 const queryClient = new QueryClient();
 
-function App() {
+function App(): React.JSX.Element {
   useAppFocus();
   useOnlineStatus();
 
@@ -48,8 +50,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <StatusBar barStyle="light-content" />
-        <TestScreen />
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
       </SafeAreaProvider>
     </QueryClientProvider>
   );

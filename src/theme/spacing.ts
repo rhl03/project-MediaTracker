@@ -2,6 +2,9 @@ export const spacing = {
   // spacing 4 - small paddings and margins
   xs: 4,
 
+  // spacing 6 - poster card padding, badge offset, poster name margin
+  xsm: 6,
+
   // spacing 8 - space between items (marginTop, gap)
   sm: 8,
 
