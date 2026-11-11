@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootStackParamList, TabParamList } from "./types";
 import { PlaceholderScreen } from "../screens/placeholderscreen/PlaceholderScreen";
 import { colors } from "../theme/colors";
+import { PosterPreview } from "../screens/placeholderscreen/PosterPreview";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -37,7 +38,7 @@ function HomeTabs(): React.JSX.Element {
     >
       <Tab.Screen
         name="Library"
-        component={PlaceholderScreen}
+        component={PosterPreview}
         options={{ title: "Library", tabBarIcon: LibraryIcon }}
       />
       <Tab.Screen

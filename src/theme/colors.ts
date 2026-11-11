@@ -2,6 +2,9 @@ export const colors = {
   // #121318 - screen background
   background: "#121318",
 
+  // #121318cc - background at 80%, for badges on top of posters
+  overlay: "#121318cc",
+
   // #1c1e25 - dialogs, list rows
   surface: "#1c1e25",
 

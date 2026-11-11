@@ -3,13 +3,17 @@ import { StyleSheet, Text, View } from "react-native";
 import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import type { Badge } from "../domain/types";
 import { colors } from "../theme/colors";
-import { radius } from "../theme/radius";
+import { spacing } from "../theme/spacing";
 import { fontSize, fontWeight } from "../theme/typography";
 
-/** Size of the square corner area that clips the ribbon. */
-const CORNER = 44;
+/** Width of the bookmark; the notch's two triangles are half of it each. */
+const TAG_WIDTH = 30;
 
-/** Diagonal ribbon in the poster's top-right corner: the percent, a check, or nothing. */
+/** Colours of the tag and of its text/check. Change these two to try other looks. */
+const TAG_COLOR = colors.primary;
+const CONTENT_COLOR = colors.background;
+
+/** Bookmark tag hanging from the poster's top edge: the percent, a check, or nothing. */
 export function ProgressBadge(props: {
   badge: Badge;
 }): React.JSX.Element | null {
@@ -20,52 +24,42 @@ export function ProgressBadge(props: {
   }
 
   return (
-    <View style={styles.corner}>
-      <View style={styles.ribbon}>
+    <View>
+      <View style={styles.body}>
         {badge.kind === "check" ? (
-          <MaterialIcons
-            name="check"
-            size={12}
-            color={colors.primary}
-            style={styles.icon}
-          />
+          <MaterialIcons name="check" size={14} color={CONTENT_COLOR} />
         ) : (
           <Text style={styles.text}>{badge.value}%</Text>
         )}
       </View>
+      <View style={styles.notch} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  /** Clips the ribbon to the poster's rounded top-right corner. */
-  corner: {
-    width: CORNER,
-    height: CORNER,
-    overflow: "hidden",
-    borderTopRightRadius: radius.sm,
-  },
-  /** The band: centred on the corner's diagonal, then turned 45°. */
-  ribbon: {
-    position: "absolute",
-    left: 0,
-    top: 4,
-    width: 62,
-    height: 18,
+  /** The rectangle with the content. */
+  body: {
+    width: TAG_WIDTH,
+    paddingTop: spacing.xsm,
+    paddingBottom: spacing.xs,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.primaryContainer,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: colors.primary,
-    transform: [{ rotate: "45deg" }],
+    backgroundColor: TAG_COLOR,
   },
-  /** Turns the check back upright; the percent text runs along the band. */
-  icon: {
-    transform: [{ rotate: "-45deg" }],
+  /** Two coloured triangles (left and right borders) with a transparent V between them. */
+  notch: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: TAG_WIDTH / 2,
+    borderRightWidth: TAG_WIDTH / 2,
+    borderBottomWidth: 6,
+    borderLeftColor: TAG_COLOR,
+    borderRightColor: TAG_COLOR,
+    borderBottomColor: "transparent",
   },
   text: {
-    color: colors.primary,
+    color: CONTENT_COLOR,
     fontSize: fontSize.xxs,
     fontWeight: fontWeight.bold,
   },
