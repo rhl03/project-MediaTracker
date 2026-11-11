@@ -1,8 +1,14 @@
-import { categoriesTable } from "../../schema";
+import {
+  categoriesTable,
+  titleCategoriesTable,
+  titlesTable,
+} from "../../schema";
 import {
   addCategory,
+  deleteCategory,
   ensureDefaultCategory,
   listCategories,
+  moveCategory,
   renameCategory,
 } from "../categories";
 import { makeDb } from "../../test/makeDb";
@@ -122,5 +128,122 @@ describe("renameCategory", () => {
     await renameCategory(db, id, "Drama");
 
     expect((await listCategories(db))[0]?.name).toBe("Library");
+  });
+});
+
+/** Creates a database with Library 0, Watching 1, Dropped 2 and Done 3. */
+async function makeDbWithFour() {
+  const db = makeDb();
+  await ensureDefaultCategory(db);
+  const watching = await addCategory(db, "Watching");
+  const dropped = await addCategory(db, "Dropped");
+  const done = await addCategory(db, "Done");
+  return { db, watching, dropped, done };
+}
+
+/** Returns the categories as "name position" strings, e.g. "Done 2". */
+async function namesAndPositions(db: Parameters<typeof listCategories>[0]) {
+  return (await listCategories(db)).map(
+    category => `${category.name} ${category.position}`,
+  );
+}
+
+describe("moveCategory", () => {
+  test("moves Done to the front: Done 0, Library 1, Watching 2, Dropped 3", async () => {
+    const { db, done } = await makeDbWithFour();
+
+    await moveCategory(db, done, 0);
+
+    expect(await namesAndPositions(db)).toEqual([
+      "Done 0",
+      "Library 1",
+      "Watching 2",
+      "Dropped 3",
+    ]);
+  });
+
+  test("moves Watching to the end: Library 0, Dropped 1, Done 2, Watching 3", async () => {
+    const { db, watching } = await makeDbWithFour();
+
+    await moveCategory(db, watching, 3);
+
+    expect(await namesAndPositions(db)).toEqual([
+      "Library 0",
+      "Dropped 1",
+      "Done 2",
+      "Watching 3",
+    ]);
+  });
+
+  test("changes nothing for an id that doesn't exist (99)", async () => {
+    const { db } = await makeDbWithFour();
+
+    await moveCategory(db, 99, 0);
+
+    expect(await namesAndPositions(db)).toEqual([
+      "Library 0",
+      "Watching 1",
+      "Dropped 2",
+      "Done 3",
+    ]);
+  });
+});
+
+describe("deleteCategory", () => {
+  test("deletes Dropped and closes the gap: Library 0, Watching 1, Done 2", async () => {
+    const { db, dropped } = await makeDbWithFour();
+
+    await deleteCategory(db, dropped);
+
+    expect(await namesAndPositions(db)).toEqual([
+      "Library 0",
+      "Watching 1",
+      "Done 2",
+    ]);
+  });
+
+  test("keeps the last category (Library)", async () => {
+    const db = makeDb();
+    await ensureDefaultCategory(db);
+    const library = (await listCategories(db))[0];
+
+    await deleteCategory(db, library?.id ?? -1);
+
+    expect(await namesAndPositions(db)).toEqual(["Library 0"]);
+  });
+
+  test("removes the category's title links but keeps the title", async () => {
+    const { db, dropped } = await makeDbWithFour();
+    const title = db
+      .insert(titlesTable)
+      .values({
+        tmdbId: 1396,
+        mediaType: "tv",
+        name: "Breaking Bad",
+        addedAt: 0,
+      })
+      .returning()
+      .get();
+    db.insert(titleCategoriesTable)
+      .values({ titleId: title.id, categoryId: dropped })
+      .run();
+
+    await deleteCategory(db, dropped);
+
+    expect(db.select().from(titleCategoriesTable).all()).toEqual([]);
+    expect(db.select().from(titlesTable).all()).toHaveLength(1);
+  });
+
+  test("changes nothing for an id that doesn't exist (99)", async () => {
+    const { db } = await makeDbWithFour();
+
+    await deleteCategory(db, 99);
+
+    expect(await namesAndPositions(db)).toEqual([
+      "Library 0",
+      "Watching 1",
+      "Dropped 2",
+      "Done 3",
+    ]);
   });
 });

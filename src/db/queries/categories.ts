@@ -1,5 +1,10 @@
 import { asc, eq } from "drizzle-orm";
-import { createCategory } from "../../domain/category";
+import {
+  canRemoveCategory,
+  createCategory,
+  removeCategory,
+  reorderCategories,
+} from "../../domain/category";
 import type { Category } from "../../domain/types";
 import { categoriesTable } from "../schema";
 import type { AppDb } from "../types";
@@ -48,4 +53,34 @@ export async function renameCategory(
     .update(categoriesTable)
     .set({ name })
     .where(eq(categoriesTable.id, id));
+}
+
+/** Saves each category's position. Used after moving or deleting a category. */
+async function savePositions(
+  db: AppDb,
+  categories: readonly Category[],
+): Promise<void> {
+  for (const category of categories) {
+    await db
+      .update(categoriesTable)
+      .set({ position: category.position })
+      .where(eq(categoriesTable.id, category.id));
+  }
+}
+
+/** Moves a category to a new place in the Home tabs and saves the new order. */
+export async function moveCategory(db: AppDb, id: number, toPlace: number) {
+  const categories = await listCategories(db);
+  const moved = reorderCategories(categories, id, toPlace);
+  await savePositions(db, moved);
+}
+
+/** Deletes a category and closes the gap in the positions. The last category is kept. */
+export async function deleteCategory(db: AppDb, id: number) {
+  const categories = await listCategories(db);
+  if (!canRemoveCategory(categories)) {
+    return;
+  }
+  await db.delete(categoriesTable).where(eq(categoriesTable.id, id));
+  await savePositions(db, removeCategory(categories, id));
 }
