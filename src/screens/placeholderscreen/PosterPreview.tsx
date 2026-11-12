@@ -1,21 +1,15 @@
 import * as React from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { SearchResult, TrackedTitle } from "../../domain/types";
 import { useSearchTitles } from "../../hooks/tmdbQueries";
-import { PosterCard } from "../../components/PosterCard";
+import { TitleGrid } from "../../components/TitleGrid";
 import { colors } from "../../theme/colors";
 import { spacing } from "../../theme/spacing";
 
-/** TEMPORARY: search term for the demo posters, and posters per row. */
+/** TEMPORARY: search term for the demo posters, and posters per row to test. */
 const DEMO_QUERY = "star";
-const COLUMNS = 4;
+const DEMO_COLUMNS = 4;
 
 /** TEMPORARY: turns a real search result into a tracked title with made-up progress. */
 function toDemoTitle(result: SearchResult, index: number): TrackedTitle {
@@ -37,21 +31,10 @@ function toDemoTitle(result: SearchResult, index: number): TrackedTitle {
   };
 }
 
-/** TEMPORARY: a grid of real TMDB posters to test PosterCard and ProgressBadge. */
+/** TEMPORARY: real TMDB posters in the TitleGrid, to test the grid and the badge. */
 export function PosterPreview(): React.JSX.Element {
-  const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const search = useSearchTitles(DEMO_QUERY);
-  const cellWidth =
-    (width - spacing.lg * 2 - spacing.sm * (COLUMNS - 1)) / COLUMNS;
-
-  if (search.isPending) {
-    return (
-      <Text style={[styles.message, { marginTop: insets.top }]}>
-        Loading posters...
-      </Text>
-    );
-  }
 
   if (search.isError) {
     return (
@@ -61,39 +44,25 @@ export function PosterPreview(): React.JSX.Element {
     );
   }
 
-  const titles = search.data.map(toDemoTitle);
+  const titles = search.isPending ? [] : search.data.map(toDemoTitle);
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.grid,
-        { paddingTop: insets.top + spacing.lg },
-      ]}
-    >
-      {titles.map(title => (
-        <View
-          key={`${title.mediaType}-${title.tmdbId}`}
-          style={{ width: cellWidth }}
-        >
-          <PosterCard
-            title={title}
-            selected={title.id === 3}
-            onPress={() => { }}
-            onLongPress={() => { }}
-          />
-        </View>
-      ))}
-    </ScrollView>
+    <View style={[styles.screen, { paddingTop: insets.top }]}>
+      <TitleGrid
+        titles={titles}
+        loading={search.isPending}
+        selectedIds={new Set([3])}
+        onPress={() => { }}
+        onLongPress={() => { }}
+        columns={DEMO_COLUMNS}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.xxl,
+  screen: {
+    flex: 1,
   },
   message: {
     color: colors.text,
