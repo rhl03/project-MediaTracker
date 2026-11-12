@@ -78,8 +78,8 @@ export function PosterPreview(): React.JSX.Element {
           <PosterCard
             title={title}
             selected={title.id === 3}
-            onPress={() => {}}
-            onLongPress={() => {}}
+            onPress={() => { }}
+            onLongPress={() => { }}
           />
         </View>
       ))}

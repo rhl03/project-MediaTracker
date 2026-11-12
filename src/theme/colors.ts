@@ -28,4 +28,10 @@ export const colors = {
 
   // #f28b82 - errors, delete, remove
   danger: "#f28b82",
+
+  // #3a2326 - dark red behind the dialog icon
+  dangerContainer: "#3a2326",
+
+  // #00000099 - black at 60%, behind dialogs
+  scrim: "#00000099",
 } as const;
