@@ -4,8 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootStackParamList, TabParamList } from "./types";
 import { PlaceholderScreen } from "../screens/placeholderscreen/PlaceholderScreen";
+import { LibraryScreen } from "../screens/library/LibraryScreen";
 import { colors } from "../theme/colors";
-import { PosterPreview } from "../screens/placeholderscreen/PosterPreview";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -38,7 +38,7 @@ function HomeTabs(): React.JSX.Element {
     >
       <Tab.Screen
         name="Library"
-        component={PosterPreview}
+        component={LibraryScreen}
         options={{ title: "Library", tabBarIcon: LibraryIcon }}
       />
       <Tab.Screen

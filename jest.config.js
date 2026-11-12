@@ -1,6 +1,7 @@
 module.exports = {
   preset: "@react-native/jest-preset",
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-navigation|@react-native-vector-icons)/)",
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-navigation|@react-native-vector-icons|@shopify/flash-list)/)",
   ],
+  setupFilesAfterEnv: ["@shopify/flash-list/jestSetup"],
 };
