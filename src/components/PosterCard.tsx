@@ -7,7 +7,7 @@ import { ProgressBadge } from "./ProgressBadge";
 import { colors } from "../theme/colors";
 import { radius } from "../theme/radius";
 import { spacing } from "../theme/spacing";
-import { opacity } from "../theme/sizes";
+import { opacity } from "../theme/height";
 import { fontSize } from "../theme/typography";
 
 // One poster in the grid: image (or a placeholder), progress badge and name.

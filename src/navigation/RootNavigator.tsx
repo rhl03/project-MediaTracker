@@ -6,6 +6,7 @@ import { RootStackParamList, TabParamList } from "./types";
 import { PlaceholderScreen } from "../screens/placeholderscreen/PlaceholderScreen";
 import { LibraryScreen } from "../screens/library/LibraryScreen";
 import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -30,7 +31,11 @@ function HomeTabs(): React.JSX.Element {
       screenOptions={{
         headerShown: false,
         tabBarLabelVisibilityMode: "unlabeled",
-        tabBarStyle: { backgroundColor: colors.surface },
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.surface2,
+        },
+        tabBarIconStyle: { marginBlock: spacing.lg },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         sceneStyle: { backgroundColor: colors.background },

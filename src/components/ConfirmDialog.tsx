@@ -2,7 +2,7 @@ import * as React from "react";
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { fontSize, fontWeight, lineHeight } from "../theme/typography";
 import { colors } from "../theme/colors";
-import { height, opacity } from "../theme/sizes";
+import { height, opacity } from "../theme/height";
 import { radius } from "../theme/radius";
 import { spacing } from "../theme/spacing";
 import MaterialIcons from "@react-native-vector-icons/material-icons/static";
@@ -28,7 +28,7 @@ export function ConfirmDialog(props: {
       onRequestClose={onCancel}
     >
       <Pressable style={styles.backdrop} onPress={onCancel}>
-        <Pressable style={styles.card} onPress={() => { }}>
+        <Pressable style={styles.card} onPress={() => {}}>
           <View style={styles.iconCircle}>
             <MaterialIcons name={icon} size={28} color="#f28b82" />
           </View>

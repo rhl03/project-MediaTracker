@@ -5,10 +5,8 @@ export function createCategory(name: string, position: number): NewCategory {
   return { name, position };
 }
 
-/**
- * Moves a category to a new place and renumbers all positions: 0, 1, 2…
- * Returns the list unchanged if the id isn't found.
- */
+// Moves a category to a new place and renumbers all positions: 0, 1, 2…
+// Returns the list unchanged if the id isn't found.
 export function reorderCategories(
   categories: readonly Category[],
   id: number,
@@ -31,10 +29,8 @@ export function canRemoveCategory(categories: readonly Category[]): boolean {
   return categories.length > 1;
 }
 
-/**
- * Removes a category and renumbers the rest. Its links are removed by the database.
- * Returns the list unchanged if it's the last category.
- */
+// Removes a category and renumbers the rest. Its links are removed by the database.
+// Returns the list unchanged if it's the last category.
 export function removeCategory(
   categories: readonly Category[],
   id: number,

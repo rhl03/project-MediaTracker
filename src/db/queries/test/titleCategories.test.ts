@@ -12,10 +12,8 @@ import {
 } from "../titleCategories";
 import { makeDb } from "../../test/makeDb";
 
-/**
- * Creates a database with two categories (Library, Watching) and three
- * series added at times 1000, 2000 and 3000.
- */
+// Creates a database with two categories (Library, Watching) and three
+// series added at times 1000, 2000 and 3000.
 function makeDbWithData() {
   const db = makeDb();
   const [library, watching] = db

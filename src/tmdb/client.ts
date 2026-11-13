@@ -16,10 +16,8 @@ export class TmdbError extends Error {
   }
 }
 
-/**
- * Sends a GET request to TMDB and returns the raw JSON (unknown until a schema checks it).
- * The built-in API key is always added; a caller's own api_key can't replace it.
- */
+// Sends a GET request to TMDB and returns the raw JSON (unknown until a schema checks it).
+// The built-in API key is always added; a caller's own api_key can't replace it.
 export async function getTmdb(
   path: string,
   params: Record<string, string> = {},
