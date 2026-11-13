@@ -1,6 +1,6 @@
 import type { Category, NewCategory, TitleCategory } from "./types";
 
-/** Makes a new category. It has no id yet; the database gives it one. */
+// Makes a new category. It has no id yet; the database gives it one.
 export function createCategory(name: string, position: number): NewCategory {
   return { name, position };
 }
@@ -26,7 +26,7 @@ export function reorderCategories(
   return result.map((category, position) => ({ ...category, position }));
 }
 
-/** True when a category may be deleted: the last one always has to stay. */
+// True when a category may be deleted: the last one always has to stay.
 export function canRemoveCategory(categories: readonly Category[]): boolean {
   return categories.length > 1;
 }
@@ -46,7 +46,7 @@ export function removeCategory(
     .map((category, i) => ({ ...category, position: i }));
 }
 
-/** True when the title is in at least one category. */
+// True when the title is in at least one category.
 export function isInLibrary(
   links: readonly TitleCategory[],
   titleId: number,

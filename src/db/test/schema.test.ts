@@ -10,7 +10,7 @@ import { makeDb } from "./makeDb";
 
 type NewTitleRow = typeof titlesTable.$inferInsert;
 
-/** Builds a title row for inserts; pass overrides to change single fields. */
+// Builds a title row for inserts; pass overrides to change single fields.
 function makeTitleRow(overrides: Partial<NewTitleRow> = {}): NewTitleRow {
   return {
     tmdbId: 1396,

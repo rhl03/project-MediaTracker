@@ -14,7 +14,7 @@ import { makeDb } from "../../test/makeDb";
 
 type TitleInput = Parameters<typeof addTitle>[1];
 
-/** Builds a title to save; pass overrides to change single fields. */
+// Builds a title to save; pass overrides to change single fields.
 function makeTitle(overrides: Partial<TitleInput> = {}): TitleInput {
   return {
     tmdbId: 1396,

@@ -18,7 +18,7 @@ import {
   tmdbTvDetailsSchema,
 } from "./schemas";
 
-/** Searches TMDB for movies and series. Empty text returns [] without a request. */
+// Searches TMDB for movies and series. Empty text returns [] without a request.
 export async function searchTitles(query: string): Promise<SearchResult[]> {
   const trimmed = query.trim();
   if (trimmed === "") {
@@ -29,14 +29,14 @@ export async function searchTitles(query: string): Promise<SearchResult[]> {
   return mapSearchResults(result);
 }
 
-/** Loads a series' details: seasons (without specials), total episodes, next episode. */
+// Loads a series' details: seasons (without specials), total episodes, next episode.
 export async function getTvDetails(tmdbId: number): Promise<TvDetails> {
   const raw = await getTmdb(`/tv/${tmdbId}`);
   const result = tmdbTvDetailsSchema.parse(raw);
   return mapTvDetails(result);
 }
 
-/** Loads all episodes of one season of a series. */
+// Loads all episodes of one season of a series.
 export async function getSeason(
   tmdbId: number,
   seasonNumber: number,
@@ -46,7 +46,7 @@ export async function getSeason(
   return mapSeason(result);
 }
 
-/** Loads a movie's details. */
+// Loads a movie's details.
 export async function getMovieDetails(tmdbId: number): Promise<MovieDetails> {
   const raw = await getTmdb(`/movie/${tmdbId}`);
   const result = tmdbMovieDetailsSchema.parse(raw);

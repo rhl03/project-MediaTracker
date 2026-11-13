@@ -17,16 +17,16 @@ import { spacing } from "../../theme/spacing";
 import { height } from "../../theme/sizes";
 import { fontSize, fontWeight } from "../../theme/typography";
 
-/** The Library tab, which can also open screens of the root stack. */
+// The Library tab, which can also open screens of the root stack.
 type Props = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, "Library">,
   NativeStackScreenProps<RootStackParamList>
 >;
 
-/** What the confirm dialog is asking about. */
+// What the confirm dialog is asking about.
 type PendingAction = "remove" | "reset";
 
-/** Library tab: search bar, selection bar and the poster grid. */
+// Library tab: search bar, selection bar and the poster grid.
 export function LibraryScreen({ navigation }: Props): React.JSX.Element {
   const { titles, loading } = useLibraryTitles();
   const [selectedIds, setSelectedIds] = useState<ReadonlySet<number>>(
@@ -91,17 +91,18 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
   const dialog =
     confirming === "reset"
       ? {
-        icon: "restart-alt" as const,
-        title: `Reset progress of ${titleCount}?`,
-        message: "All watched episodes will be unmarked.",
-        confirmLabel: "Reset",
-      }
+          icon: "restart-alt" as const,
+          title: `Reset progress of ${titleCount}?`,
+          message: "All watched episodes will be unmarked.",
+          confirmLabel: "Reset",
+        }
       : {
-        icon: "delete-outline" as const,
-        title: `Remove ${titleCount}?`,
-        message: "Your watched episodes will be deleted too. This can't be undone.",
-        confirmLabel: "Remove",
-      };
+          icon: "delete-outline" as const,
+          title: `Remove ${titleCount}?`,
+          message:
+            "Your watched episodes will be deleted too. This can't be undone.",
+          confirmLabel: "Remove",
+        };
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>

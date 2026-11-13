@@ -3,7 +3,7 @@ import type { LatestEpisodeType } from "../../domain/types";
 import { titlesTable, watchedEpisodesTable } from "../schema";
 import type { AppDb } from "../types";
 
-/** Marks one episode as watched and saves when the title was last watched. */
+// Marks one episode as watched and saves when the title was last watched.
 export async function markEpisode(
   db: AppDb,
   titleId: number,
@@ -26,7 +26,7 @@ export async function markEpisode(
     .where(eq(titlesTable.id, titleId));
 }
 
-/** Marks several episodes as watched at once, e.g. "up to here" or Mark as Done. */
+// Marks several episodes as watched at once, e.g. "up to here" or Mark as Done.
 export async function markEpisodes(
   db: AppDb,
   titleId: number,
@@ -55,7 +55,7 @@ export async function markEpisodes(
     .where(eq(titlesTable.id, titleId));
 }
 
-/** Marks one episode as not watched. */
+// Marks one episode as not watched.
 export async function unmarkEpisode(
   db: AppDb,
   titleId: number,
@@ -72,7 +72,7 @@ export async function unmarkEpisode(
     );
 }
 
-/** Returns the watched episodes of a title, sorted by season and episode. */
+// Returns the watched episodes of a title, sorted by season and episode.
 export async function listWatched(
   db: AppDb,
   titleId: number,
@@ -90,7 +90,7 @@ export async function listWatched(
     );
 }
 
-/** Unmarks every episode of a title and clears when it was last watched. */
+// Unmarks every episode of a title and clears when it was last watched.
 export async function resetProgress(db: AppDb, titleId: number): Promise<void> {
   await db
     .delete(watchedEpisodesTable)

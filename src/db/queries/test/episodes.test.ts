@@ -11,7 +11,7 @@ import { makeDb } from "../../test/makeDb";
 
 type TitleInput = Parameters<typeof addTitle>[1];
 
-/** Builds a series to save; pass overrides to change single fields. */
+// Builds a series to save; pass overrides to change single fields.
 function makeTitle(overrides: Partial<TitleInput> = {}): TitleInput {
   return {
     tmdbId: 1396,
@@ -24,7 +24,7 @@ function makeTitle(overrides: Partial<TitleInput> = {}): TitleInput {
   };
 }
 
-/** Creates a database with Breaking Bad and Game of Thrones saved. */
+// Creates a database with Breaking Bad and Game of Thrones saved.
 async function makeDbWithTitles() {
   const db = makeDb();
   const breakingBad = await addTitle(db, makeTitle());

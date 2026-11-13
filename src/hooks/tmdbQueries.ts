@@ -8,7 +8,7 @@ import {
 
 const HOUR = 60 * 60 * 1000;
 
-/** Movie details, fresh for 24 h. */
+// Movie details, fresh for 24 h.
 export function useMovieDetails(tmdbId: number) {
   return useQuery({
     queryKey: ["movie", tmdbId],
@@ -17,7 +17,7 @@ export function useMovieDetails(tmdbId: number) {
   });
 }
 
-/** Series details, fresh for 6 h (new episodes and seasons get added). */
+// Series details, fresh for 6 h (new episodes and seasons get added).
 export function useTvDetails(tmdbId: number) {
   return useQuery({
     queryKey: ["tv", tmdbId],
@@ -26,7 +26,7 @@ export function useTvDetails(tmdbId: number) {
   });
 }
 
-/** All episodes of one season, fresh for 24 h. */
+// All episodes of one season, fresh for 24 h.
 export function useSeason(tmdbId: number, seasonNumber: number) {
   return useQuery({
     queryKey: ["season", tmdbId, seasonNumber],
@@ -35,7 +35,7 @@ export function useSeason(tmdbId: number, seasonNumber: number) {
   });
 }
 
-/** Search results for a text. Not kept fresh: every search asks TMDB again. */
+// Search results for a text. Not kept fresh: every search asks TMDB again.
 export function useSearchTitles(query: string) {
   return useQuery({
     queryKey: ["search", query],

@@ -6,10 +6,10 @@ import { PosterCard } from "./PosterCard";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 
-/** Posters per row when the caller doesn't choose. */
+// Posters per row when the caller doesn't choose.
 const DEFAULT_COLUMNS = 4;
 
-/** Poster grid. Only displays: the titles come from the screen (via a hook). */
+// Poster grid. Only displays: the titles come from the screen (via a hook).
 export function TitleGrid(props: {
   titles: TrackedTitle[];
   loading: boolean;

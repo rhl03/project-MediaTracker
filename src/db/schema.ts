@@ -8,14 +8,14 @@ import {
   unique,
 } from "drizzle-orm/sqlite-core";
 
-/** User-made lists shown as Home tabs, ordered by position. */
+// User-made lists shown as Home tabs, ordered by position.
 export const categoriesTable = sqliteTable("categories", {
   id: integer().primaryKey(),
   name: text().notNull(),
   position: integer().notNull(),
 });
 
-/** One row per tracked movie or series. Progress stays here even when it's in no category. */
+// One row per tracked movie or series. Progress stays here even when it's in no category.
 export const titlesTable = sqliteTable(
   "titles",
   {
@@ -35,7 +35,7 @@ export const titlesTable = sqliteTable(
   ],
 );
 
-/** One row per watched episode. Deleted together with its title. */
+// One row per watched episode. Deleted together with its title.
 export const watchedEpisodesTable = sqliteTable(
   "watched_episodes",
   {
@@ -53,7 +53,7 @@ export const watchedEpisodesTable = sqliteTable(
   ],
 );
 
-/** Links titles to categories. A title can be in several; links go when either side is deleted. */
+// Links titles to categories. A title can be in several; links go when either side is deleted.
 export const titleCategoriesTable = sqliteTable(
   "title_categories",
   {
@@ -71,7 +71,7 @@ export const titleCategoriesTable = sqliteTable(
   ],
 );
 
-/** App settings as key–value pairs. */
+// App settings as key–value pairs.
 export const settingsTable = sqliteTable("settings", {
   key: text().primaryKey(),
   value: text().notNull(),

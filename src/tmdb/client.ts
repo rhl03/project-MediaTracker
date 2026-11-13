@@ -1,10 +1,10 @@
 import z from "zod";
 import { TMDB_API_KEY } from "../config/secrets";
 
-/** All TMDB requests go to the v3 API. */
+// All TMDB requests go to the v3 API.
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
 
-/** Thrown when TMDB answers with an error status, e.g. 401 (bad key) or 404. */
+// Thrown when TMDB answers with an error status, e.g. 401 (bad key) or 404.
 export class TmdbError extends Error {
   status: number;
 
@@ -43,7 +43,7 @@ export async function getTmdb(
   return response.json();
 }
 
-/** Turns an error from a TMDB request into a short message for the screen. */
+// Turns an error from a TMDB request into a short message for the screen.
 export function describeTmdbError(error: unknown): string {
   if (error instanceof TmdbError) {
     if (error.status === 401) {

@@ -6,21 +6,21 @@ export type TmdbTvDetails = z.infer<typeof tmdbTvDetailsSchema>;
 export type TmdbSeasonDetails = z.infer<typeof tmdbSeasonDetailsSchema>;
 export type TmdbSearchResponse = z.infer<typeof tmdbSearchResponseSchema>;
 
-/** A season in a series' season list. */
+// A season in a series' season list.
 export const tmdbSeasonSchema = z.object({
   season_number: z.number(),
   name: z.string(),
   episode_count: z.number(),
 });
 
-/** The next episode that hasn't aired yet. */
+// The next episode that hasn't aired yet.
 export const tmdbNextEpisodeSchema = z.object({
   season_number: z.number(),
   episode_number: z.number(),
   air_date: z.string(),
 });
 
-/** An episode in a season. air_date is null when unknown. */
+// An episode in a season. air_date is null when unknown.
 export const tmdbEpisodeSchema = z.object({
   season_number: z.number(),
   episode_number: z.number(),
@@ -28,13 +28,13 @@ export const tmdbEpisodeSchema = z.object({
   air_date: z.string().nullable(),
 });
 
-/** GET /tv/{id}/season/{number} */
+// GET /tv/{id}/season/{number}
 export const tmdbSeasonDetailsSchema = z.object({
   season_number: z.number(),
   episodes: z.array(tmdbEpisodeSchema),
 });
 
-/** A movie in search results. */
+// A movie in search results.
 export const tmdbSearchMovieSchema = z.object({
   id: z.number(),
   title: z.string(),
@@ -43,7 +43,7 @@ export const tmdbSearchMovieSchema = z.object({
   media_type: z.literal("movie"),
 });
 
-/** A series in search results. */
+// A series in search results.
 export const tmdbSearchTvSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -52,21 +52,21 @@ export const tmdbSearchTvSchema = z.object({
   media_type: z.literal("tv"),
 });
 
-/** A person in search results (not shown in the app). */
+// A person in search results (not shown in the app).
 export const tmdbSearchPersonSchema = z.object({
   id: z.number(),
   name: z.string(),
   media_type: z.literal("person"),
 });
 
-/** A movie, series or person, picked by media_type. */
+// A movie, series or person, picked by media_type.
 export const tmdbSearchItemSchema = z.discriminatedUnion("media_type", [
   tmdbSearchMovieSchema,
   tmdbSearchTvSchema,
   tmdbSearchPersonSchema,
 ]);
 
-/** GET /search/multi */
+// GET /search/multi
 export const tmdbSearchResponseSchema = z.object({
   page: z.number(),
   results: z.array(tmdbSearchItemSchema),
@@ -74,7 +74,7 @@ export const tmdbSearchResponseSchema = z.object({
   total_results: z.number(),
 });
 
-/** GET /movie/{id} */
+// GET /movie/{id}
 export const tmdbMovieDetailsSchema = z.object({
   id: z.number(),
   title: z.string(),
@@ -84,7 +84,7 @@ export const tmdbMovieDetailsSchema = z.object({
   release_date: z.string(),
 });
 
-/** GET /tv/{id} */
+// GET /tv/{id}
 export const tmdbTvDetailsSchema = z.object({
   id: z.number(),
   name: z.string(),

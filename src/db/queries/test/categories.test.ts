@@ -131,7 +131,7 @@ describe("renameCategory", () => {
   });
 });
 
-/** Creates a database with Library 0, Watching 1, Dropped 2 and Done 3. */
+// Creates a database with Library 0, Watching 1, Dropped 2 and Done 3.
 async function makeDbWithFour() {
   const db = makeDb();
   await ensureDefaultCategory(db);
@@ -141,7 +141,7 @@ async function makeDbWithFour() {
   return { db, watching, dropped, done };
 }
 
-/** Returns the categories as "name position" strings, e.g. "Done 2". */
+// Returns the categories as "name position" strings, e.g. "Done 2".
 async function namesAndPositions(db: Parameters<typeof listCategories>[0]) {
   return (await listCategories(db)).map(
     category => `${category.name} ${category.position}`,

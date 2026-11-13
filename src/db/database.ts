@@ -7,5 +7,5 @@ const opsqliteDb = open({
 
 opsqliteDb.executeSync("PRAGMA foreign_keys = ON");
 
-/** The app's database. Import this everywhere instead of opening a new connection. */
+// The app's database. Import this everywhere instead of opening a new connection.
 export const db = drizzle(opsqliteDb);

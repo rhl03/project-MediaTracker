@@ -9,7 +9,7 @@ import type { Category } from "../../domain/types";
 import { categoriesTable } from "../schema";
 import type { AppDb } from "../types";
 
-/** Creates the "Library" category on first launch, when there are no categories yet. */
+// Creates the "Library" category on first launch, when there are no categories yet.
 export async function ensureDefaultCategory(db: AppDb): Promise<void> {
   const categories = await db.select().from(categoriesTable);
 
@@ -18,7 +18,7 @@ export async function ensureDefaultCategory(db: AppDb): Promise<void> {
   }
 }
 
-/** Returns all categories in Home tab order (position 0 first). */
+// Returns all categories in Home tab order (position 0 first).
 export async function listCategories(db: AppDb): Promise<Category[]> {
   return db
     .select()
@@ -26,7 +26,7 @@ export async function listCategories(db: AppDb): Promise<Category[]> {
     .orderBy(asc(categoriesTable.position));
 }
 
-/** Adds a category at the end of the list and returns its id. */
+// Adds a category at the end of the list and returns its id.
 export async function addCategory(db: AppDb, name: string): Promise<number> {
   const categories = await listCategories(db);
   const position = Math.max(-1, ...categories.map(c => c.position)) + 1;
@@ -43,7 +43,7 @@ export async function addCategory(db: AppDb, name: string): Promise<number> {
   return id;
 }
 
-/** Gives a category a new name. Its id and position stay the same. */
+// Gives a category a new name. Its id and position stay the same.
 export async function renameCategory(
   db: AppDb,
   id: number,
@@ -55,7 +55,7 @@ export async function renameCategory(
     .where(eq(categoriesTable.id, id));
 }
 
-/** Saves each category's position. Used after moving or deleting a category. */
+// Saves each category's position. Used after moving or deleting a category.
 async function savePositions(
   db: AppDb,
   categories: readonly Category[],
@@ -68,14 +68,14 @@ async function savePositions(
   }
 }
 
-/** Moves a category to a new place in the Home tabs and saves the new order. */
+// Moves a category to a new place in the Home tabs and saves the new order.
 export async function moveCategory(db: AppDb, id: number, toPlace: number) {
   const categories = await listCategories(db);
   const moved = reorderCategories(categories, id, toPlace);
   await savePositions(db, moved);
 }
 
-/** Deletes a category and closes the gap in the positions. The last category is kept. */
+// Deletes a category and closes the gap in the positions. The last category is kept.
 export async function deleteCategory(db: AppDb, id: number) {
   const categories = await listCategories(db);
   if (!canRemoveCategory(categories)) {

@@ -1,6 +1,6 @@
 import type { LoadedDetails, NewTitle } from "./types";
 
-/** Turns loaded TMDB details into a new title. Movies get 0 episodes. */
+// Turns loaded TMDB details into a new title. Movies get 0 episodes.
 export function toNewTitle(loaded: LoadedDetails): NewTitle {
   switch (loaded.mediaType) {
     case "tv":

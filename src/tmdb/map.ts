@@ -11,7 +11,7 @@ import {
   TmdbTvDetails,
 } from "./schemas";
 
-/** TMDB movie details → the app's MovieDetails. */
+// TMDB movie details → the app's MovieDetails.
 export function mapMovieDetails(raw: TmdbMovieDetails): MovieDetails {
   return {
     tmdbId: raw.id,
@@ -23,7 +23,7 @@ export function mapMovieDetails(raw: TmdbMovieDetails): MovieDetails {
   };
 }
 
-/** "1999-03-31" → "1999". Null when the date is missing or empty. */
+// "1999-03-31" → "1999". Null when the date is missing or empty.
 function dateHelper(date: string | undefined): string | null {
   if (!date) {
     return null;
@@ -31,7 +31,7 @@ function dateHelper(date: string | undefined): string | null {
   return date.slice(0, 4);
 }
 
-/** TMDB search results → SearchResult list. People are left out. */
+// TMDB search results → SearchResult list. People are left out.
 export function mapSearchResults(raw: TmdbSearchResponse): SearchResult[] {
   return raw.results
     .filter(item => item.media_type !== "person")
@@ -55,7 +55,7 @@ export function mapSearchResults(raw: TmdbSearchResponse): SearchResult[] {
     );
 }
 
-/** TMDB series details → TvDetails. Season 0 (specials) is skipped and not counted. */
+// TMDB series details → TvDetails. Season 0 (specials) is skipped and not counted.
 export function mapTvDetails(raw: TmdbTvDetails): TvDetails {
   const seasons = raw.seasons
     .filter(season => season.season_number !== 0)
@@ -91,7 +91,7 @@ export function mapTvDetails(raw: TmdbTvDetails): TvDetails {
   };
 }
 
-/** TMDB season details → Episode list. An empty air date becomes null. */
+// TMDB season details → Episode list. An empty air date becomes null.
 export function mapSeason(raw: TmdbSeasonDetails): Episode[] {
   const episodes = raw.episodes.map(episode => ({
     seasonNumber: episode.season_number,

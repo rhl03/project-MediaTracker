@@ -10,20 +10,20 @@ import { colors } from "../theme/colors";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
-/** Props React Navigation passes to a tab icon. */
+// Props React Navigation passes to a tab icon.
 type TabIconProps = { color: string; size: number };
 
-/** Icon for the Library tab. */
+// Icon for the Library tab.
 function LibraryIcon({ color, size }: TabIconProps): React.JSX.Element {
   return <MaterialIcons name="video-library" color={color} size={size} />;
 }
 
-/** Icon for the Settings tab. */
+// Icon for the Settings tab.
 function SettingsIcon({ color, size }: TabIconProps): React.JSX.Element {
   return <MaterialIcons name="settings" color={color} size={size} />;
 }
 
-/** Bottom bar with Library and Settings. */
+// Bottom bar with Library and Settings.
 function HomeTabs(): React.JSX.Element {
   return (
     <Tab.Navigator
@@ -50,7 +50,7 @@ function HomeTabs(): React.JSX.Element {
   );
 }
 
-/** Root stack: the tabs first, then the screens that open over them. */
+// Root stack: the tabs first, then the screens that open over them.
 export function RootNavigator(): React.JSX.Element {
   return (
     <Stack.Navigator

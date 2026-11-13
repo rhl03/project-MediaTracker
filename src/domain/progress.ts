@@ -7,7 +7,7 @@ import {
   TrackedTitle,
 } from "./types";
 
-/** Short month names for shortDate, January first. */
+// Short month names for shortDate, January first.
 const MONTHS = [
   "Jan",
   "Feb",
@@ -23,7 +23,7 @@ const MONTHS = [
   "Dec",
 ];
 
-/** Watched percent (0–100), rounded and capped at 100. 0 when total is 0. */
+// Watched percent (0–100), rounded and capped at 100. 0 when total is 0.
 export function progressPercent(watched: number, total: number): number {
   if (total <= 0) {
     return 0;
@@ -31,7 +31,7 @@ export function progressPercent(watched: number, total: number): number {
   return Math.min(Math.round((watched / total) * 100), 100);
 }
 
-/** The furthest watched episode (later season wins), or null if none. */
+// The furthest watched episode (later season wins), or null if none.
 export function latestEpisode(
   watched: readonly LatestEpisodeType[],
 ): LatestEpisodeType | null {
@@ -49,7 +49,7 @@ export function latestEpisode(
   return latest;
 }
 
-/** A label like "S2 E5", or "Not started" when there is no episode. */
+// A label like "S2 E5", or "Not started" when there is no episode.
 export function progressLabel(latest: LatestEpisodeType | null): string {
   if (latest === null) {
     return "Not started";
@@ -57,7 +57,7 @@ export function progressLabel(latest: LatestEpisodeType | null): string {
   return `S${latest.seasonNumber} E${latest.episodeNumber}`;
 }
 
-/** The poster badge: check when done, percent otherwise, nothing at 0%. */
+// The poster badge: check when done, percent otherwise, nothing at 0%.
 export function progressBadge(title: TrackedTitle): Badge {
   if (title.mediaType === "movie") {
     return title.watched ? { kind: "check" } : { kind: "none" };
@@ -72,7 +72,7 @@ export function progressBadge(title: TrackedTitle): Badge {
   return { kind: "percent", value: percent };
 }
 
-/** Every episode from S1 E1 up to and including the target. */
+// Every episode from S1 E1 up to and including the target.
 export function episodesUpTo(
   seasons: readonly SeasonSummary[],
   target: LatestEpisodeType,
@@ -93,7 +93,7 @@ export function episodesUpTo(
   return refs;
 }
 
-/** The episode to watch next, or null when the series is done. */
+// The episode to watch next, or null when the series is done.
 export function nextToWatch(
   seasons: readonly SeasonSummary[],
   watched: readonly LatestEpisodeType[],
@@ -122,7 +122,7 @@ export function nextToWatch(
     : null;
 }
 
-/** A date as "YYYY-MM-DD" in the phone's local time. */
+// A date as "YYYY-MM-DD" in the phone's local time.
 export function isoDate(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -130,7 +130,7 @@ export function isoDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-/** "2026-11-03" → "3 Nov". Null when the text isn't a date. */
+// "2026-11-03" → "3 Nov". Null when the text isn't a date.
 export function shortDate(iso: string): string | null {
   const [, month, day] = iso.split("-");
   const monthName = MONTHS[Number(month) - 1];
@@ -140,12 +140,12 @@ export function shortDate(iso: string): string | null {
   return `${Number(day)} ${monthName}`;
 }
 
-/** True when the episode aired before today. No date = not aired. */
+// True when the episode aired before today. No date = not aired.
 export function isAired(airDate: string | null, today: string): boolean {
   return airDate !== null && airDate < today;
 }
 
-/** Text like "Next: S3 E5 · 7 Nov", or null when already aired or none. */
+// Text like "Next: S3 E5 · 7 Nov", or null when already aired or none.
 export function formatNextEpisode(
   next: NextEpisode | null,
   today: string,
@@ -160,7 +160,7 @@ export function formatNextEpisode(
   return `Next: S${next.seasonNumber} E${next.episodeNumber} · ${date}`;
 }
 
-/** Only the episodes that aired before today. Used by "Mark as Done". */
+// Only the episodes that aired before today. Used by "Mark as Done".
 export function airedEpisodes(
   episodes: readonly Episode[],
   today: string,

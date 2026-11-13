@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { titlesTable } from "../schema";
 import type { AppDb } from "../types";
 
-/** Returns the title with this TMDB id and type, or undefined if it isn't saved. */
+// Returns the title with this TMDB id and type, or undefined if it isn't saved.
 export async function getTitle(
   db: AppDb,
   tmdbId: number,
@@ -16,10 +16,10 @@ export async function getTitle(
     );
   return result[0];
 }
-/** A title as it's passed in: everything except id (set by SQLite) and addedAt (set by addTitle). */
+// A title as it's passed in: everything except id (set by SQLite) and addedAt (set by addTitle).
 type TitleInput = Omit<typeof titlesTable.$inferInsert, "id" | "addedAt">;
 
-/** Saves a title and returns its id. If it's already saved, returns the existing id unchanged. */
+// Saves a title and returns its id. If it's already saved, returns the existing id unchanged.
 export async function addTitle(db: AppDb, title: TitleInput): Promise<number> {
   await db
     .insert(titlesTable)
@@ -33,7 +33,7 @@ export async function addTitle(db: AppDb, title: TitleInput): Promise<number> {
   return saved.id;
 }
 
-/** Saves a new episode count for a series, e.g. when TMDB has new episodes. */
+// Saves a new episode count for a series, e.g. when TMDB has new episodes.
 export async function updateTotalEpisodes(
   db: AppDb,
   id: number,
@@ -45,7 +45,7 @@ export async function updateTotalEpisodes(
     .where(eq(titlesTable.id, id));
 }
 
-/** Marks a movie as watched or not watched. */
+// Marks a movie as watched or not watched.
 export async function markMovieWatched(
   db: AppDb,
   id: number,
@@ -57,7 +57,7 @@ export async function markMovieWatched(
     .where(eq(titlesTable.id, id));
 }
 
-/** Deletes a title; its watched episodes and category links are deleted with it. */
+// Deletes a title; its watched episodes and category links are deleted with it.
 export async function removeTitle(db: AppDb, id: number) {
   await db.delete(titlesTable).where(eq(titlesTable.id, id));
 }

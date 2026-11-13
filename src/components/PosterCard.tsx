@@ -10,7 +10,7 @@ import { spacing } from "../theme/spacing";
 import { opacity } from "../theme/sizes";
 import { fontSize } from "../theme/typography";
 
-/** One poster in the grid: image (or a placeholder), progress badge and name. */
+// One poster in the grid: image (or a placeholder), progress badge and name.
 export function PosterCard(props: {
   title: TrackedTitle;
   selected: boolean;

@@ -1,10 +1,10 @@
 import type { SearchResult, TrackedTitle } from "../domain/types";
 import { useSearchTitles } from "./tmdbQueries";
 
-/** TEMPORARY: search term for the demo titles. */
+// TEMPORARY: search term for the demo titles.
 const DEMO_QUERY = "star";
 
-/** TEMPORARY: turns a search result into a tracked title with made-up progress. */
+// TEMPORARY: turns a search result into a tracked title with made-up progress.
 function toDemoTitle(result: SearchResult, index: number): TrackedTitle {
   const isMovie = result.mediaType === "movie";
   const totalEpisodes = isMovie ? 0 : 8 + (index % 4) * 6;
@@ -24,7 +24,7 @@ function toDemoTitle(result: SearchResult, index: number): TrackedTitle {
   };
 }
 
-/** Titles for the Library grid. TEMPORARY: demo data from TMDB until the database is connected. */
+// Titles for the Library grid. TEMPORARY: demo data from TMDB until the database is connected.
 export function useLibraryTitles(): {
   titles: TrackedTitle[];
   loading: boolean;

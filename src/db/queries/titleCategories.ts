@@ -4,7 +4,7 @@ import type { AppDb } from "../types";
 
 type TitleRow = typeof titlesTable.$inferSelect;
 
-/** Puts a title into a category. Does nothing if it's already there. */
+// Puts a title into a category. Does nothing if it's already there.
 export async function addToCategory(
   db: AppDb,
   titleId: number,
@@ -16,7 +16,7 @@ export async function addToCategory(
     .onConflictDoNothing();
 }
 
-/** Takes a title out of a category. Its progress is kept. */
+// Takes a title out of a category. Its progress is kept.
 export async function removeFromCategory(
   db: AppDb,
   titleId: number,
@@ -32,7 +32,7 @@ export async function removeFromCategory(
     );
 }
 
-/** Counts the titles in a category, e.g. for the delete warning. */
+// Counts the titles in a category, e.g. for the delete warning.
 export async function countTitles(db: AppDb, categoryId: number) {
   const result = await db
     .select({ count: count() })
@@ -41,7 +41,7 @@ export async function countTitles(db: AppDb, categoryId: number) {
   return result[0]?.count ?? 0;
 }
 
-/** Returns the ids of the categories a title is in, e.g. for the ticked boxes in the Add dialog. */
+// Returns the ids of the categories a title is in, e.g. for the ticked boxes in the Add dialog.
 export async function listCategoryIdsForTitle(db: AppDb, titleId: number) {
   return (
     await db
@@ -51,7 +51,7 @@ export async function listCategoryIdsForTitle(db: AppDb, titleId: number) {
   ).map(row => row.categoryId);
 }
 
-/** Returns the titles in a category for its Home tab, newest added first. */
+// Returns the titles in a category for its Home tab, newest added first.
 export async function listTitlesInCategory(
   db: AppDb,
   categoryId: number,

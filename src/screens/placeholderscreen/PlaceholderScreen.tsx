@@ -2,10 +2,8 @@ import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useRoute } from "@react-navigation/native";
 
-/**
- * Temporary screen for routes that are not built yet.
- * Shows the route name so you can see which screen you are on.
- */
+// Temporary screen for routes that are not built yet.
+// Shows the route name so you can see which screen you are on.
 export function PlaceholderScreen(): React.JSX.Element {
   const route = useRoute();
 

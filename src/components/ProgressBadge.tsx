@@ -6,14 +6,14 @@ import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 import { fontSize, fontWeight } from "../theme/typography";
 
-/** Width of the bookmark; the notch's two triangles are half of it each. */
+// Width of the bookmark; the notch's two triangles are half of it each.
 const TAG_WIDTH = 30;
 
-/** Colours of the tag and of its text/check. Change these two to try other looks. */
+// Colours of the tag and of its text/check. Change these two to try other looks.
 const TAG_COLOR = colors.primary;
 const CONTENT_COLOR = colors.background;
 
-/** Bookmark tag hanging from the poster's top edge: the percent, a check, or nothing. */
+// Bookmark tag hanging from the poster's top edge: the percent, a check, or nothing.
 export function ProgressBadge(props: {
   badge: Badge;
 }): React.JSX.Element | null {
@@ -38,7 +38,7 @@ export function ProgressBadge(props: {
 }
 
 const styles = StyleSheet.create({
-  /** The rectangle with the content. */
+  // The rectangle with the content.
   body: {
     width: TAG_WIDTH,
     paddingTop: spacing.xsm,
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: TAG_COLOR,
   },
-  /** Two coloured triangles (left and right borders) with a transparent V between them. */
+  // Two coloured triangles (left and right borders) with a transparent V between them.
   notch: {
     width: 0,
     height: 0,
