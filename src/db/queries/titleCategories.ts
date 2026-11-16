@@ -1,8 +1,11 @@
-import { and, count, desc, eq } from "drizzle-orm";
-import { titleCategoriesTable, titlesTable } from "../schema";
+import { and, count, desc, eq, getColumns } from "drizzle-orm";
+import type { TrackedTitle } from "../../domain/types";
+import {
+  titleCategoriesTable,
+  titlesTable,
+  watchedEpisodesTable,
+} from "../schema";
 import type { AppDb } from "../types";
-
-type TitleRow = typeof titlesTable.$inferSelect;
 
 // Puts a title into a category. Does nothing if it's already there.
 export async function addToCategory(
@@ -51,19 +54,27 @@ export async function listCategoryIdsForTitle(db: AppDb, titleId: number) {
   ).map(row => row.categoryId);
 }
 
-// Returns the titles in a category for its Home tab, newest added first.
+// Returns the titles in a category for its Home tab, newest added first,
+// each with how many of its episodes are watched.
 export async function listTitlesInCategory(
   db: AppDb,
   categoryId: number,
-): Promise<TitleRow[]> {
-  const rows = await db
-    .select()
+): Promise<TrackedTitle[]> {
+  return db
+    .select({
+      ...getColumns(titlesTable),
+      watchedCount: count(watchedEpisodesTable.titleId),
+    })
     .from(titlesTable)
     .innerJoin(
       titleCategoriesTable,
       eq(titleCategoriesTable.titleId, titlesTable.id),
     )
+    .leftJoin(
+      watchedEpisodesTable,
+      eq(watchedEpisodesTable.titleId, titlesTable.id),
+    )
     .where(eq(titleCategoriesTable.categoryId, categoryId))
+    .groupBy(titlesTable.id)
     .orderBy(desc(titlesTable.addedAt));
-  return rows.map(row => row.titles);
 }

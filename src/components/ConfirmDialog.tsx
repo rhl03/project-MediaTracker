@@ -7,17 +7,31 @@ import { radius } from "../theme/radius";
 import { spacing } from "../theme/spacing";
 import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 
+// Blue for actions that can be redone, red for ones that can't.
+export type DialogTone = "primary" | "danger";
+
 export function ConfirmDialog(props: {
   visible: boolean;
   icon: React.ComponentProps<typeof MaterialIcons>["name"];
   title: string;
   message: string;
   confirmLabel: string;
+  tone?: DialogTone;
   onConfirm: () => void;
   onCancel: () => void;
 }): React.JSX.Element {
-  const { visible, icon, title, message, confirmLabel, onConfirm, onCancel } =
-    props;
+  const {
+    visible,
+    icon,
+    title,
+    message,
+    confirmLabel,
+    tone = "danger",
+    onConfirm,
+    onCancel,
+  } = props;
+
+  const danger = tone === "danger";
 
   return (
     <Modal
@@ -29,8 +43,17 @@ export function ConfirmDialog(props: {
     >
       <Pressable style={styles.backdrop} onPress={onCancel}>
         <Pressable style={styles.card} onPress={() => {}}>
-          <View style={styles.iconCircle}>
-            <MaterialIcons name={icon} size={28} color="#f28b82" />
+          <View
+            style={[
+              styles.iconCircle,
+              danger ? styles.iconCircleDanger : styles.iconCirclePrimary,
+            ]}
+          >
+            <MaterialIcons
+              name={icon}
+              size={28}
+              color={danger ? colors.danger : colors.primary}
+            />
           </View>
 
           <Text style={styles.title}>{title}</Text>
@@ -50,7 +73,7 @@ export function ConfirmDialog(props: {
             <Pressable
               style={({ pressed }) => [
                 styles.button,
-                styles.confirm,
+                danger ? styles.confirmDanger : styles.confirmPrimary,
                 pressed && styles.pressed,
               ]}
               onPress={onConfirm}
@@ -63,6 +86,7 @@ export function ConfirmDialog(props: {
     </Modal>
   );
 }
+
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
@@ -83,10 +107,15 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: radius.xxl,
-    backgroundColor: colors.dangerContainer,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: spacing.lg,
+  },
+  iconCircleDanger: {
+    backgroundColor: colors.dangerContainer,
+  },
+  iconCirclePrimary: {
+    backgroundColor: colors.primaryContainer,
   },
   title: {
     color: colors.text,
@@ -117,8 +146,11 @@ const styles = StyleSheet.create({
   cancel: {
     backgroundColor: colors.surface3,
   },
-  confirm: {
+  confirmDanger: {
     backgroundColor: colors.danger,
+  },
+  confirmPrimary: {
+    backgroundColor: colors.primary,
   },
   pressed: {
     opacity: opacity.pressed,

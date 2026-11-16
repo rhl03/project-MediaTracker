@@ -10,6 +10,7 @@ import {
   listTitlesInCategory,
   removeFromCategory,
 } from "../titleCategories";
+import { markEpisodes } from "../episodes";
 import { makeDb } from "../../test/makeDb";
 
 // Creates a database with two categories (Library, Watching) and three
@@ -180,5 +181,75 @@ describe("listTitlesInCategory", () => {
     const { db, watching } = makeDbWithData();
 
     expect(await listTitlesInCategory(db, watching)).toEqual([]);
+  });
+
+  test("returns watchedCount 0 for a title without watched episodes", async () => {
+    const { db, watching, breakingBad } = makeDbWithData();
+    await addToCategory(db, breakingBad, watching);
+
+    const [title] = await listTitlesInCategory(db, watching);
+
+    expect(title?.watchedCount).toBe(0);
+  });
+
+  test("returns watchedCount 2 for a title with two watched episodes", async () => {
+    const { db, watching, breakingBad } = makeDbWithData();
+    await addToCategory(db, breakingBad, watching);
+    await markEpisodes(
+      db,
+      breakingBad,
+      [
+        { seasonNumber: 1, episodeNumber: 1 },
+        { seasonNumber: 1, episodeNumber: 2 },
+      ],
+      5000,
+    );
+
+    const [title] = await listTitlesInCategory(db, watching);
+
+    expect(title?.watchedCount).toBe(2);
+  });
+
+  test("does not count another title's watched episodes", async () => {
+    const { db, watching, breakingBad, theWire } = makeDbWithData();
+    await addToCategory(db, breakingBad, watching);
+    await addToCategory(db, theWire, watching);
+    await markEpisodes(
+      db,
+      theWire,
+      [
+        { seasonNumber: 1, episodeNumber: 1 },
+        { seasonNumber: 1, episodeNumber: 2 },
+        { seasonNumber: 1, episodeNumber: 3 },
+      ],
+      5000,
+    );
+
+    const counts = (await listTitlesInCategory(db, watching)).map(title => [
+      title.name,
+      title.watchedCount,
+    ]);
+
+    expect(counts).toEqual([
+      ["The Wire", 3],
+      ["Breaking Bad", 0],
+    ]);
+  });
+
+  test("returns one row per title, not one per watched episode", async () => {
+    const { db, watching, breakingBad } = makeDbWithData();
+    await addToCategory(db, breakingBad, watching);
+    await markEpisodes(
+      db,
+      breakingBad,
+      [
+        { seasonNumber: 1, episodeNumber: 1 },
+        { seasonNumber: 1, episodeNumber: 2 },
+        { seasonNumber: 1, episodeNumber: 3 },
+      ],
+      5000,
+    );
+
+    expect(await listTitlesInCategory(db, watching)).toHaveLength(1);
   });
 });
