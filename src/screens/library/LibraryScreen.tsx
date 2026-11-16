@@ -10,7 +10,11 @@ import type { RootStackParamList, TabParamList } from "../../navigation/types";
 import type { TrackedTitle } from "../../domain/types";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { CategoryTabs } from "../../components/CategoryTabs";
-import { useCategories } from "../../hooks/libraryQueries";
+import {
+  useCategories,
+  useRemoveTitles,
+  useResetProgress,
+} from "../../hooks/libraryQueries";
 import { spacing } from "../../theme/spacing";
 import { SearchBar } from "./components/SearchBar";
 import { SelectionBar } from "./components/SelectionBar";
@@ -36,6 +40,8 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
     selecting,
     clearSelection,
   );
+  const removeTitles = useRemoveTitles();
+  const resetTitles = useResetProgress();
   const [confirming, setConfirming] = useState<PendingAction | null>(null);
 
   function onPosterPress(title: TrackedTitle) {
@@ -50,8 +56,13 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
   }
 
   function runConfirmed() {
-    setConfirming(null);
-    // TODO (sub-step 4d): remove/reset in the database via a hook.
+    const ids = [...selectedIds];
+    if (confirming === "remove") {
+      removeTitles.mutate(ids);
+    } else {
+      resetTitles.mutate(ids);
+    }
+
     clearSelection();
   }
 
