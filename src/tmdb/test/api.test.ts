@@ -1,6 +1,7 @@
 import movie603Json from "../__fixtures__/movie-603.json";
 import searchMatrixJson from "../__fixtures__/search-matrix.json";
-import { getMovieDetails, searchTitles } from "../api";
+import tv1396Json from "../__fixtures__/tv-1396.json";
+import { getMovieDetails, loadDetails, searchTitles } from "../api";
 import { TmdbError } from "../client";
 
 jest.mock("../../config/secrets", () => ({ TMDB_API_KEY: "test-key" }));
@@ -58,5 +59,30 @@ describe("getMovieDetails", () => {
   test("throws when TMDB sends data that doesn't match the schema", async () => {
     answer({ ...movie603Json, id: "603" });
     await expect(getMovieDetails(603)).rejects.toThrow();
+  });
+});
+
+describe("loadDetails", () => {
+  test("returns movie details tagged as movie for mediaType movie", async () => {
+    answer(movie603Json);
+    const loaded = await loadDetails("movie", 603);
+    expect(loaded.mediaType).toBe("movie");
+    expect(loaded.details.name).toBe("The Matrix");
+  });
+
+  test("returns series details tagged as tv for mediaType tv", async () => {
+    answer(tv1396Json);
+    const loaded = await loadDetails("tv", 1396);
+    expect(loaded.mediaType).toBe("tv");
+    expect(loaded.details.name).toBe("Breaking Bad");
+  });
+
+  test("asks TMDB for /movie, not /tv, for mediaType movie", async () => {
+    answer(movie603Json);
+    await loadDetails("movie", 603);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.themoviedb.org/3/movie/603?api_key=test-key",
+      expect.anything(),
+    );
   });
 });

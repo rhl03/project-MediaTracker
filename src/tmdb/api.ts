@@ -1,5 +1,7 @@
-import {
+import type {
   Episode,
+  LoadedDetails,
+  MediaType,
   MovieDetails,
   SearchResult,
   TvDetails,
@@ -51,4 +53,15 @@ export async function getMovieDetails(tmdbId: number): Promise<MovieDetails> {
   const raw = await getTmdb(`/movie/${tmdbId}`);
   const result = tmdbMovieDetailsSchema.parse(raw);
   return mapMovieDetails(result);
+}
+
+// Loads series or movie details, depending on the media type.
+export async function loadDetails(
+  mediaType: MediaType,
+  tmdbId: number,
+): Promise<LoadedDetails> {
+  if (mediaType === "tv") {
+    return { mediaType: "tv", details: await getTvDetails(tmdbId) };
+  }
+  return { mediaType: "movie", details: await getMovieDetails(tmdbId) };
 }

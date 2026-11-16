@@ -3,11 +3,11 @@ import { MaterialIcons } from "@react-native-vector-icons/material-icons/static"
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootStackParamList, TabParamList } from "./types";
-import { PlaceholderScreen } from "../screens/placeholderscreen/PlaceholderScreen";
 import { LibraryScreen } from "../screens/library/LibraryScreen";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 import { SearchScreen } from "../screens/search/SearchScreen";
+import { DetailsScreen } from "../screens/details/DetailsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -49,7 +49,7 @@ function HomeTabs(): React.JSX.Element {
       />
       <Tab.Screen
         name="Settings"
-        component={PlaceholderScreen}
+        component={LibraryScreen}
         options={{ title: "Settings", tabBarIcon: SettingsIcon }}
       />
     </Tab.Navigator>
@@ -76,21 +76,7 @@ export function RootNavigator(): React.JSX.Element {
         component={SearchScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="Details"
-        component={PlaceholderScreen}
-        options={{ title: "Details" }}
-      />
-      <Stack.Screen
-        name="About"
-        component={PlaceholderScreen}
-        options={{ title: "About" }}
-      />
-      <Stack.Screen
-        name="Manage"
-        component={PlaceholderScreen}
-        options={{ title: "Manage categories" }}
-      />
+      <Stack.Screen name="Details" component={DetailsScreen} options={{}} />
     </Stack.Navigator>
   );
 }

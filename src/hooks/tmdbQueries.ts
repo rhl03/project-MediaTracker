@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import type { MediaType } from "../domain/types";
 import {
   getMovieDetails,
   getSeason,
   getTvDetails,
+  loadDetails,
   searchTitles,
 } from "../tmdb/api";
 
@@ -26,6 +28,16 @@ export function useTvDetails(tmdbId: number) {
   });
 }
 
+// Series or movie details for the Details screen, with the same cache times
+// as useTvDetails / useMovieDetails.
+export function useDetails(mediaType: MediaType, tmdbId: number) {
+  return useQuery({
+    queryKey: ["details", mediaType, tmdbId],
+    queryFn: () => loadDetails(mediaType, tmdbId),
+    staleTime: mediaType === "tv" ? 6 * HOUR : 24 * HOUR,
+  });
+}
+
 // All episodes of one season, fresh for 24 h.
 export function useSeason(tmdbId: number, seasonNumber: number) {
   return useQuery({
@@ -35,7 +47,8 @@ export function useSeason(tmdbId: number, seasonNumber: number) {
   });
 }
 
-// Search results for a text. Not kept fresh: every search asks TMDB again. Skipped while the text is empty
+// Search results for a text. Not kept fresh: every search asks TMDB again.
+// Skipped while the text is empty.
 export function useSearchTitles(query: string) {
   return useQuery({
     queryKey: ["search", query],
