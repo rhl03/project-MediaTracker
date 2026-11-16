@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import type { TrackedTitle } from "../domain/types";
-import { progressBadge } from "../domain/progress";
+import type { Badge } from "../domain/types";
 import { posterUrl } from "../tmdb/images";
 import { ProgressBadge } from "./ProgressBadge";
 import { colors } from "../theme/colors";
@@ -10,15 +9,25 @@ import { spacing } from "../theme/spacing";
 import { opacity } from "../theme/height";
 import { fontSize } from "../theme/typography";
 
-// One poster in the grid: image (or a placeholder), progress badge and name.
+// One poster in a grid: image (or a placeholder), optional progress badge and
+// name. Used by the Library (with badge and selection) and Search (without).
 export function PosterCard(props: {
-  title: TrackedTitle;
-  selected: boolean;
+  name: string;
+  posterPath: string | null;
+  badge?: Badge;
+  selected?: boolean;
   onPress: () => void;
-  onLongPress: () => void;
+  onLongPress?: () => void;
 }): React.JSX.Element {
-  const { title, selected, onPress, onLongPress } = props;
-  const uri = posterUrl(title.posterPath, "w342");
+  const {
+    name,
+    posterPath,
+    badge,
+    selected = false,
+    onPress,
+    onLongPress,
+  } = props;
+  const uri = posterUrl(posterPath, "w342");
 
   return (
     <Pressable
@@ -33,19 +42,21 @@ export function PosterCard(props: {
         ) : (
           <View style={[styles.image, styles.placeholder]}>
             <Text style={styles.placeholderText} numberOfLines={3}>
-              {title.name}
+              {name}
             </Text>
           </View>
         )}
-        <View style={styles.badge}>
-          <ProgressBadge badge={progressBadge(title)} />
-        </View>
+        {badge !== undefined && (
+          <View style={styles.badge}>
+            <ProgressBadge badge={badge} />
+          </View>
+        )}
       </View>
       <Text
         style={[styles.name, selected && styles.nameSelected]}
         numberOfLines={2}
       >
-        {title.name}
+        {name}
       </Text>
     </Pressable>
   );

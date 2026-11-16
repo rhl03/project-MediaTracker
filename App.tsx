@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
@@ -11,6 +11,9 @@ import { ensureDefaultCategory } from "./src/db/queries/categories";
 import { useAppFocus } from "./src/hooks/useAppFocus";
 import { useOnlineStatus } from "./src/hooks/useOnlineStatus";
 import { RootNavigator } from "./src/navigation/RootNavigator";
+import { colors } from "./src/theme/colors";
+import { spacing } from "./src/theme/spacing";
+import { fontSize, lineHeight } from "./src/theme/typography";
 
 const queryClient = new QueryClient();
 
@@ -33,16 +36,18 @@ function App(): React.JSX.Element {
 
   if (error || seedError) {
     return (
-      <View>
-        <Text>Database error: {(error ?? seedError)?.message}</Text>
+      <View style={styles.centered}>
+        <Text style={styles.message}>
+          Database error: {(error ?? seedError)?.message}
+        </Text>
       </View>
     );
   }
 
   if (!success || !seeded) {
     return (
-      <View>
-        <Text>Preparing database...</Text>
+      <View style={styles.centered}>
+        <Text style={styles.message}>Preparing database...</Text>
       </View>
     );
   }
@@ -57,5 +62,22 @@ function App(): React.JSX.Element {
     </QueryClientProvider>
   );
 }
+
+// The full-screen views shown before the app is ready.
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: spacing.xl,
+  },
+  message: {
+    color: colors.text,
+    fontSize: fontSize.md,
+    lineHeight: lineHeight.md,
+    textAlign: "center",
+  },
+});
 
 export default App;

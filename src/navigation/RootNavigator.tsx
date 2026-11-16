@@ -7,6 +7,7 @@ import { PlaceholderScreen } from "../screens/placeholderscreen/PlaceholderScree
 import { LibraryScreen } from "../screens/library/LibraryScreen";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
+import { SearchScreen } from "../screens/search/SearchScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -72,8 +73,8 @@ export function RootNavigator(): React.JSX.Element {
       />
       <Stack.Screen
         name="Search"
-        component={PlaceholderScreen}
-        options={{ title: "Search" }}
+        component={SearchScreen}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="Details"

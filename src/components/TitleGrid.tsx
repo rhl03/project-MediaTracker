@@ -2,6 +2,7 @@ import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import type { TrackedTitle } from "../domain/types";
+import { progressBadge } from "../domain/progress";
 import { PosterCard } from "./PosterCard";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
@@ -38,7 +39,9 @@ export function TitleGrid(props: {
       renderItem={({ item }) => (
         <View style={styles.cell}>
           <PosterCard
-            title={item}
+            name={item.name}
+            posterPath={item.posterPath}
+            badge={progressBadge(item)}
             selected={selectedIds.has(item.id)}
             onPress={() => onPress(item)}
             onLongPress={() => onLongPress(item)}

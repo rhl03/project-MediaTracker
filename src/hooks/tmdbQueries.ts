@@ -35,10 +35,11 @@ export function useSeason(tmdbId: number, seasonNumber: number) {
   });
 }
 
-// Search results for a text. Not kept fresh: every search asks TMDB again.
+// Search results for a text. Not kept fresh: every search asks TMDB again. Skipped while the text is empty
 export function useSearchTitles(query: string) {
   return useQuery({
     queryKey: ["search", query],
     queryFn: () => searchTitles(query),
+    enabled: query.trim().length > 0,
   });
 }
