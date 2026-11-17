@@ -1,12 +1,14 @@
 import type { Category, NewCategory, TitleCategory } from "./types";
 
+// Why a category name can't be saved.
+export type CategoryNameError = "empty" | "duplicate";
+
 // Makes a new category. It has no id yet; the database gives it one.
 export function createCategory(name: string, position: number): NewCategory {
   return { name, position };
 }
 
-// Moves a category to a new place and renumbers all positions: 0, 1, 2…
-// Returns the list unchanged if the id isn't found.
+// Moves a category to a new place and renumbers all positions; unchanged if the id isn't found.
 export function reorderCategories(
   categories: readonly Category[],
   id: number,
@@ -29,8 +31,7 @@ export function canRemoveCategory(categories: readonly Category[]): boolean {
   return categories.length > 1;
 }
 
-// Removes a category and renumbers the rest. Its links are removed by the database.
-// Returns the list unchanged if it's the last category.
+// Removes a category and renumbers the rest; unchanged if it's the last one (links go in the database).
 export function removeCategory(
   categories: readonly Category[],
   id: number,
@@ -48,4 +49,21 @@ export function isInLibrary(
   titleId: number,
 ): boolean {
   return links.some(link => link.titleId === titleId);
+}
+
+// Checks a new or changed name: empty, already used (ignoring case and spaces), or null when fine.
+export function categoryNameError(
+  name: string,
+  categories: readonly Category[],
+  ignoreId?: number,
+): CategoryNameError | null {
+  const cleaned = name.trim().toLowerCase();
+  if (cleaned === "") return "empty";
+
+  const taken = categories.some(
+    category =>
+      category.id !== ignoreId &&
+      category.name.trim().toLowerCase() === cleaned,
+  );
+  return taken ? "duplicate" : null;
 }

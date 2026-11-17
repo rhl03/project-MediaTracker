@@ -4,10 +4,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootStackParamList, TabParamList } from "./types";
 import { LibraryScreen } from "../screens/library/LibraryScreen";
-import { colors } from "../theme/colors";
-import { spacing } from "../theme/spacing";
 import { SearchScreen } from "../screens/search/SearchScreen";
 import { DetailsScreen } from "../screens/details/DetailsScreen";
+import { AboutScreen } from "../screens/about/AboutScreen";
+import { ManageScreen } from "../screens/manage/ManageScreen";
+import { colors } from "../theme/colors";
+import { spacing } from "../theme/spacing";
+import { SettingsScreen } from "../screens/settings/SettingsScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -49,7 +52,7 @@ function HomeTabs(): React.JSX.Element {
       />
       <Tab.Screen
         name="Settings"
-        component={LibraryScreen}
+        component={SettingsScreen}
         options={{ title: "Settings", tabBarIcon: SettingsIcon }}
       />
     </Tab.Navigator>
@@ -77,6 +80,16 @@ export function RootNavigator(): React.JSX.Element {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Screen
+        name="About"
+        component={AboutScreen}
+        options={{ title: "About" }}
+      />
+      <Stack.Screen
+        name="Manage"
+        component={ManageScreen}
+        options={{ title: "Manage categories" }}
+      />
     </Stack.Navigator>
   );
 }

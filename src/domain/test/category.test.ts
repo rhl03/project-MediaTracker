@@ -1,5 +1,6 @@
 import {
   canRemoveCategory,
+  categoryNameError,
   createCategory,
   isInLibrary,
   removeCategory,
@@ -92,5 +93,35 @@ describe("isInLibrary", () => {
 
   test("returns false when there are no links at all", () => {
     expect(isInLibrary([], 10)).toBe(false);
+  });
+});
+
+describe("categoryNameError", () => {
+  test("returns null for a new name (Anime)", () => {
+    expect(categoryNameError("Anime", categories)).toBeNull();
+  });
+
+  test("returns empty for an empty name", () => {
+    expect(categoryNameError("", categories)).toBe("empty");
+  });
+
+  test("returns empty for a name with only spaces", () => {
+    expect(categoryNameError("   ", categories)).toBe("empty");
+  });
+
+  test("returns duplicate for a name that's already used (Done)", () => {
+    expect(categoryNameError("Done", categories)).toBe("duplicate");
+  });
+
+  test("returns duplicate for other capitals and spaces ( done )", () => {
+    expect(categoryNameError(" done ", categories)).toBe("duplicate");
+  });
+
+  test("returns null when renaming Done to its own name (ignoreId 3)", () => {
+    expect(categoryNameError("Done", categories, 3)).toBeNull();
+  });
+
+  test("returns duplicate when renaming Done to Watching (ignoreId 3)", () => {
+    expect(categoryNameError("Watching", categories, 3)).toBe("duplicate");
   });
 });

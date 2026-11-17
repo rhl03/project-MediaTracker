@@ -1,8 +1,9 @@
 import * as React from "react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
+  Linking,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,7 +11,7 @@ import {
 } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "../../navigation/types";
-import type { Badge } from "../../domain/types";
+import type { Badge, MediaType } from "../../domain/types";
 import {
   formatNextEpisode,
   isoDate,
@@ -29,6 +30,7 @@ import {
   useSavedTitle,
   useTitleCategoryIds,
   useToggleEpisode,
+  useUpdateTotalEpisodes,
   useWatchedEpisodes,
 } from "../../hooks/libraryQueries";
 import { CategoryTabs } from "../../components/CategoryTabs";
@@ -53,6 +55,11 @@ type PendingAction = "reset" | "remove";
 // How long the season underline slides after a tap.
 const TAB_SLIDE_MS = 250;
 
+// The title's page on the TMDB website.
+function tmdbUrl(mediaType: MediaType, tmdbId: number): string {
+  return `https://www.themoviedb.org/${mediaType}/${tmdbId}`;
+}
+
 // Details of one movie or series: hero, overview, Add, progress, next episode and episodes.
 export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
   const { mediaType, tmdbId } = route.params;
@@ -67,27 +74,49 @@ export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
   const markWatched = useMarkMovieWatched(savedTitle?.id);
   const removeTitles = useRemoveTitles();
   const resetTitles = useResetProgress();
+  const { mutate: updateTotal } = useUpdateTotalEpisodes();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirming, setConfirming] = useState<PendingAction | null>(null);
   const [seasonIndex, setSeasonIndex] = useState(0);
   const seasonProgress = useRef(new Animated.Value(0)).current;
 
-  // The ⋮ in the header, only for saved titles.
+  // The episode total from TMDB, newer than the saved one.
+  const totalEpisodes =
+    data?.mediaType === "tv" ? data.details.totalEpisodes : 0;
+
+  // The header icons: TMDB link always, ⋮ only for saved titles.
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight:
-        savedTitle === null
-          ? undefined
-          : () => (
-              <IconButton
-                name="more-vert"
-                color={colors.text}
-                onPress={() => setMenuOpen(true)}
-              />
-            ),
+      headerRight: () => (
+        <View style={styles.headerActions}>
+          <IconButton
+            name="open-in-new"
+            color={colors.text}
+            onPress={() => void Linking.openURL(tmdbUrl(mediaType, tmdbId))}
+          />
+          {savedTitle !== null && (
+            <IconButton
+              name="more-vert"
+              color={colors.text}
+              onPress={() => setMenuOpen(true)}
+            />
+          )}
+        </View>
+      ),
     });
-  }, [navigation, savedTitle]);
+  }, [navigation, savedTitle, mediaType, tmdbId]);
+
+  // Saves TMDB's episode total when a saved series has new episodes.
+  useEffect(() => {
+    if (
+      data?.mediaType === "tv" &&
+      savedTitle !== null &&
+      savedTitle.totalEpisodes !== totalEpisodes
+    ) {
+      updateTotal({ titleId: savedTitle.id, totalEpisodes });
+    }
+  }, [data, savedTitle, totalEpisodes, updateTotal]);
 
   // The names of the categories this title is in, in tab order.
   const categoryNames = categories
@@ -99,10 +128,6 @@ export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
     data?.mediaType === "tv"
       ? formatNextEpisode(data.details.nextEpisode, isoDate(new Date()))
       : null;
-
-  // The episode total from TMDB, newer than the saved one.
-  const totalEpisodes =
-    data?.mediaType === "tv" ? data.details.totalEpisodes : 0;
 
   // Progress is only shown for saved series.
   const showProgress = data?.mediaType === "tv" && savedTitle !== null;
@@ -310,5 +335,10 @@ const styles = StyleSheet.create({
   },
   seasonTabs: {
     marginTop: spacing.lg,
+  },
+  headerActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.lg,
   },
 });

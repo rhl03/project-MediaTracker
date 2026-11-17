@@ -1,16 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
+  Category,
   Episode,
   LoadedDetails,
   MediaType,
   SeasonSummary,
 } from "../domain/types";
+import { reorderCategories } from "../domain/category";
 import { episodesUpTo } from "../domain/progress";
 import { toNewTitle } from "../domain/newTitle";
 import { db } from "../db/database";
-import { listCategories } from "../db/queries/categories";
+import {
+  addCategory,
+  deleteCategory,
+  listCategories,
+  moveCategory,
+  renameCategory,
+} from "../db/queries/categories";
 import {
   addToCategory,
+  countTitles,
   listCategoryIdsForTitle,
   listTitlesInCategory,
   removeFromCategory,
@@ -20,6 +29,7 @@ import {
   getTitle,
   markMovieWatched,
   removeTitle,
+  updateTotalEpisodes,
 } from "../db/queries/titles";
 import {
   listWatched,
@@ -34,6 +44,83 @@ export function useCategories() {
     queryKey: ["categories"],
     queryFn: () => listCategories(db),
     staleTime: Infinity,
+  });
+}
+
+// How many titles each category has, keyed by category id.
+export function useCategoryCounts() {
+  return useQuery({
+    queryKey: ["categoryCounts"],
+    queryFn: async () => {
+      const counts: Record<number, number> = {};
+      for (const category of await listCategories(db)) {
+        counts[category.id] = await countTitles(db, category.id);
+      }
+      return counts;
+    },
+    staleTime: Infinity,
+  });
+}
+
+// Adds a category at the end of the tabs.
+export function useAddCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (name: string) => {
+      await addCategory(db, name.trim());
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryCounts"] });
+    },
+  });
+}
+
+// Gives a category a new name.
+export function useRenameCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (change: { id: number; name: string }) => {
+      await renameCategory(db, change.id, change.name.trim());
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+}
+
+// Moves a category; the cached list changes at once so a dragged row doesn't jump back.
+export function useMoveCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (change: { id: number; toPlace: number }) => {
+      await moveCategory(db, change.id, change.toPlace);
+    },
+    onMutate: async change => {
+      await queryClient.cancelQueries({ queryKey: ["categories"] });
+      queryClient.setQueryData<Category[]>(["categories"], old =>
+        old ? reorderCategories(old, change.id, change.toPlace) : old,
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+  });
+}
+
+// Deletes a category; its titles only lose this category, progress stays.
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await deleteCategory(db, id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryCounts"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["titleCategories"] });
+    },
   });
 }
 
@@ -76,6 +163,7 @@ export function useRemoveTitles() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryCounts"] });
       queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
       queryClient.invalidateQueries({ queryKey: ["titleCategories"] });
       queryClient.invalidateQueries({ queryKey: ["watched"] });
@@ -144,6 +232,7 @@ export function useSaveCategories(loaded: LoadedDetails | undefined) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["titleCategories"] });
       queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryCounts"] });
       queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
     },
   });
@@ -186,6 +275,20 @@ export function useMarkMovieWatched(titleId: number | undefined) {
         return;
       }
       await markMovieWatched(db, titleId, watched);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+    },
+  });
+}
+
+// Saves a newer episode total from TMDB, so Library percentages stay right.
+export function useUpdateTotalEpisodes() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (change: { titleId: number; totalEpisodes: number }) => {
+      await updateTotalEpisodes(db, change.titleId, change.totalEpisodes);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
