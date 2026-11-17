@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { LoadedDetails, MediaType } from "../domain/types";
+import type {
+  Episode,
+  LoadedDetails,
+  MediaType,
+  SeasonSummary,
+} from "../domain/types";
+import { episodesUpTo } from "../domain/progress";
 import { toNewTitle } from "../domain/newTitle";
 import { db } from "../db/database";
 import { listCategories } from "../db/queries/categories";
@@ -9,8 +15,18 @@ import {
   listTitlesInCategory,
   removeFromCategory,
 } from "../db/queries/titleCategories";
-import { addTitle, getTitle, removeTitle } from "../db/queries/titles";
-import { resetProgress } from "../db/queries/episodes";
+import {
+  addTitle,
+  getTitle,
+  markMovieWatched,
+  removeTitle,
+} from "../db/queries/titles";
+import {
+  listWatched,
+  markEpisodes,
+  resetProgress,
+  unmarkEpisode,
+} from "../db/queries/episodes";
 
 // All categories, in tab order.
 export function useCategories() {
@@ -30,7 +46,26 @@ export function useCategoryTitles(categoryId: number) {
   });
 }
 
-// Deletes titles completely, progress included, then reloads every category.
+// A TMDB title as saved in the database, or null when it isn't saved yet.
+export function useSavedTitle(mediaType: MediaType, tmdbId: number) {
+  return useQuery({
+    queryKey: ["savedTitle", mediaType, tmdbId],
+    queryFn: async () => (await getTitle(db, tmdbId, mediaType)) ?? null,
+    staleTime: Infinity,
+  });
+}
+
+// The watched episodes of a saved title; waits until there is an id.
+export function useWatchedEpisodes(titleId: number | undefined) {
+  return useQuery({
+    queryKey: ["watched", titleId],
+    queryFn: () => listWatched(db, titleId ?? 0),
+    enabled: titleId !== undefined,
+    staleTime: Infinity,
+  });
+}
+
+// Deletes titles with their progress, then reloads everything that shows them.
 export function useRemoveTitles() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -39,22 +74,30 @@ export function useRemoveTitles() {
         await removeTitle(db, id);
       }
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
+      queryClient.invalidateQueries({ queryKey: ["titleCategories"] });
+      queryClient.invalidateQueries({ queryKey: ["watched"] });
+    },
   });
 }
 
-// Unmarks every episode of the titles, then reloads every category.
+// Unmarks every episode and the movie watched flag of the titles, then reloads progress.
 export function useResetProgress() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (ids: number[]) => {
       for (const id of ids) {
         await resetProgress(db, id);
+        await markMovieWatched(db, id, false);
       }
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
+      queryClient.invalidateQueries({ queryKey: ["watched"] });
+    },
   });
 }
 
@@ -70,9 +113,7 @@ export function useTitleCategoryIds(mediaType: MediaType, tmdbId: number) {
   });
 }
 
-// Saves the categories chosen in the picker: adds the new ones and removes the
-// unticked ones. Saves the title first if needed (addTitle returns the existing
-// id when it's already saved). Does nothing when nothing changed.
+// Saves the picker's choice: saves the title if needed, adds new categories, removes unticked ones.
 export function useSaveCategories(loaded: LoadedDetails | undefined) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -102,6 +143,52 @@ export function useSaveCategories(loaded: LoadedDetails | undefined) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["titleCategories"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+      queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
+    },
+  });
+}
+
+// Ticks an episode and every one before it, or unticks only that episode.
+export function useToggleEpisode(
+  titleId: number | undefined,
+  seasons: ReadonlyArray<SeasonSummary>,
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (change: { episode: Episode; watched: boolean }) => {
+      if (titleId === undefined) {
+        return;
+      }
+      const ref = {
+        seasonNumber: change.episode.seasonNumber,
+        episodeNumber: change.episode.episodeNumber,
+      };
+      if (change.watched) {
+        await unmarkEpisode(db, titleId, ref);
+      } else {
+        await markEpisodes(db, titleId, episodesUpTo(seasons, ref), Date.now());
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["watched"] });
+      queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
+    },
+  });
+}
+
+// Marks a saved movie as watched or not watched.
+export function useMarkMovieWatched(titleId: number | undefined) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (watched: boolean) => {
+      if (titleId === undefined) {
+        return;
+      }
+      await markMovieWatched(db, titleId, watched);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedTitle"] });
       queryClient.invalidateQueries({ queryKey: ["categoryTitles"] });
     },
   });

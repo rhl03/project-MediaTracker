@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-import type { LoadedDetails } from "../../../domain/types";
+import type { Badge, LoadedDetails } from "../../../domain/types";
 import { posterUrl } from "../../../tmdb/images";
+import { ProgressBadge } from "../../../components/ProgressBadge";
 import { colors } from "../../../theme/colors";
 import { radius } from "../../../theme/radius";
 import { spacing } from "../../../theme/spacing";
@@ -9,6 +10,8 @@ import { fontSize, fontWeight } from "../../../theme/typography";
 
 type Props = {
   loaded: LoadedDetails;
+  // The progress badge on the poster; null for titles that aren't saved.
+  badge: Badge | null;
 };
 
 // Width of the poster in the hero; the height follows from 2:3.
@@ -29,8 +32,8 @@ function metaLine(loaded: LoadedDetails): string {
   return year !== undefined ? `Movie · ${year}` : "Movie";
 }
 
-// The top of Details: blurred poster behind, poster, name and a short info line.
-export function DetailsHero({ loaded }: Props): React.JSX.Element {
+// The top of Details: blurred poster behind, poster with badge, name and a short info line.
+export function DetailsHero({ loaded, badge }: Props): React.JSX.Element {
   const uri = posterUrl(loaded.details.posterPath, "w342");
   const blurUri = posterUrl(loaded.details.posterPath, "w185");
 
@@ -46,11 +49,18 @@ export function DetailsHero({ loaded }: Props): React.JSX.Element {
       <View style={styles.shade} />
 
       <View style={styles.row}>
-        {uri !== null ? (
-          <Image source={{ uri }} style={styles.poster} />
-        ) : (
-          <View style={[styles.poster, styles.placeholder]} />
-        )}
+        <View>
+          {uri !== null ? (
+            <Image source={{ uri }} style={styles.poster} />
+          ) : (
+            <View style={[styles.poster, styles.placeholder]} />
+          )}
+          {badge !== null && (
+            <View style={styles.badge}>
+              <ProgressBadge badge={badge} />
+            </View>
+          )}
+        </View>
         <View style={styles.texts}>
           <Text style={styles.name} numberOfLines={3}>
             {loaded.details.name}
@@ -84,6 +94,12 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     backgroundColor: colors.surface3,
+  },
+  // Same place as on the Library posters: top edge, right side.
+  badge: {
+    position: "absolute",
+    top: 0,
+    right: spacing.sm,
   },
   texts: {
     flex: 1,

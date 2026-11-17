@@ -62,7 +62,7 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
     } else {
       resetTitles.mutate(ids);
     }
-
+    setConfirming(null);
     clearSelection();
   }
 
@@ -74,15 +74,14 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
       ? {
           icon: "restart-alt" as const,
           title: `Reset progress of ${titleCount}?`,
-          message: "All watched episodes will be unmarked.",
+          message: "Watched episodes and movies will be unmarked.",
           confirmLabel: "Reset",
           tone: "primary" as const,
         }
       : {
           icon: "delete-outline" as const,
           title: `Remove ${titleCount}?`,
-          message:
-            "Your watched episodes will be deleted too. This can't be undone.",
+          message: "Progress will be deleted too. This can't be undone.",
           confirmLabel: "Remove",
           tone: "danger" as const,
         };
