@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
-import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
+import { StyleSheet, TextInput, View } from "react-native";
+import { IconButton } from "../../../components/IconButton";
 import { colors } from "../../../theme/colors";
 import { radius } from "../../../theme/radius";
 import { spacing } from "../../../theme/spacing";
@@ -22,9 +22,7 @@ export function SearchField({
 }: Props): React.JSX.Element {
   return (
     <View style={styles.bar}>
-      <Pressable onPress={onBack} hitSlop={12}>
-        <MaterialIcons name="arrow-back" size={24} color={colors.textMuted} />
-      </Pressable>
+      <IconButton name="arrow-back" color={colors.text} onPress={onBack} />
       <TextInput
         style={styles.input}
         value={value}

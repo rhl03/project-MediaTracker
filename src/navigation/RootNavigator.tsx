@@ -76,7 +76,7 @@ export function RootNavigator(): React.JSX.Element {
         component={SearchScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Details" component={DetailsScreen} options={{}} />
+      <Stack.Screen name="Details" component={DetailsScreen} />
     </Stack.Navigator>
   );
 }

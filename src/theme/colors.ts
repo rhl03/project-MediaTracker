@@ -34,4 +34,7 @@ export const colors = {
 
   // #00000099 - black at 60%, behind dialogs
   scrim: "#00000099",
+
+  // #ffffff1f - white at 12%, the press ripple on buttons and icons
+  ripple: "#ffffff1f",
 } as const;

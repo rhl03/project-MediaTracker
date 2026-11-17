@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
+import { StyleSheet, Text, View } from "react-native";
+import { IconButton } from "../../../components/IconButton";
 import { colors } from "../../../theme/colors";
 import { radius } from "../../../theme/radius";
 import { spacing } from "../../../theme/spacing";
@@ -23,16 +23,20 @@ export function SelectionBar({
 }: Props): React.JSX.Element {
   return (
     <View style={styles.bar}>
-      <Pressable onPress={onClose} hitSlop={12}>
-        <MaterialIcons name="close" size={24} color={colors.primary} />
-      </Pressable>
+      <IconButton name="close" color={colors.primary} onPress={onClose} />
       <Text style={styles.text}>{count} selected</Text>
-      <Pressable onPress={onReset} hitSlop={12} style={styles.icon}>
-        <MaterialIcons name="restart-alt" size={24} color={colors.primary} />
-      </Pressable>
-      <Pressable onPress={onRemove} hitSlop={12} style={styles.icon}>
-        <MaterialIcons name="delete-outline" size={24} color={colors.danger} />
-      </Pressable>
+      <IconButton
+        name="restart-alt"
+        color={colors.primary}
+        onPress={onReset}
+        style={styles.icon}
+      />
+      <IconButton
+        name="delete-outline"
+        color={colors.danger}
+        onPress={onRemove}
+        style={styles.icon}
+      />
     </View>
   );
 }
