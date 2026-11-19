@@ -2,6 +2,7 @@ import * as React from "react";
 import type { TrackedTitle } from "../../../domain/types";
 import { TitleGrid } from "../../../components/TitleGrid";
 import { useCategoryTitles } from "../../../hooks/libraryQueries";
+import { usePostersPerRow } from "../../../hooks/settingsQueries";
 
 type Props = {
   categoryId: number;
@@ -18,6 +19,8 @@ export function CategoryPage({
   onLongPress,
 }: Props): React.JSX.Element {
   const { data, isPending } = useCategoryTitles(categoryId);
+  // Undefined while loading, so TitleGrid uses its default until the setting is read.
+  const { data: postersPerRow } = usePostersPerRow();
 
   return (
     <TitleGrid
@@ -26,6 +29,7 @@ export function CategoryPage({
       selectedIds={selectedIds}
       onPress={onPress}
       onLongPress={onLongPress}
+      columns={postersPerRow}
     />
   );
 }

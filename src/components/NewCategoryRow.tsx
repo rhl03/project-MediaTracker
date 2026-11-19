@@ -1,20 +1,33 @@
 import * as React from "react";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import type { CategoryNameError } from "../../../domain/category";
-import { IconButton } from "../../../components/IconButton";
-import { colors } from "../../../theme/colors";
-import { radius } from "../../../theme/radius";
-import { spacing } from "../../../theme/spacing";
-import { fontSize } from "../../../theme/typography";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
+import type { CategoryNameError } from "../domain/category";
+import { IconButton } from "./IconButton";
+import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
+import { spacing } from "../theme/spacing";
+import { fontSize } from "../theme/typography";
 
 type Props = {
   nameError: (name: string) => CategoryNameError | null;
   onAdd: (name: string) => void;
+  // Overrides the card look, e.g. a lighter background inside a popup.
+  style?: StyleProp<ViewStyle>;
 };
 
 // Text field with a + button that adds a category at the end.
-export function NewCategoryRow({ nameError, onAdd }: Props): React.JSX.Element {
+export function NewCategoryRow({
+  nameError,
+  onAdd,
+  style,
+}: Props): React.JSX.Element {
   const [name, setName] = useState("");
   const error = nameError(name);
 
@@ -27,7 +40,7 @@ export function NewCategoryRow({ nameError, onAdd }: Props): React.JSX.Element {
   }
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       <View style={styles.row}>
         <TextInput
           style={styles.input}

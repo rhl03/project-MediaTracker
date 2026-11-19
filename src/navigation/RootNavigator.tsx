@@ -7,7 +7,6 @@ import { LibraryScreen } from "../screens/library/LibraryScreen";
 import { SearchScreen } from "../screens/search/SearchScreen";
 import { DetailsScreen } from "../screens/details/DetailsScreen";
 import { AboutScreen } from "../screens/about/AboutScreen";
-import { ManageScreen } from "../screens/manage/ManageScreen";
 import { colors } from "../theme/colors";
 import { spacing } from "../theme/spacing";
 import { SettingsScreen } from "../screens/settings/SettingsScreen";
@@ -84,11 +83,6 @@ export function RootNavigator(): React.JSX.Element {
         name="About"
         component={AboutScreen}
         options={{ title: "About" }}
-      />
-      <Stack.Screen
-        name="Manage"
-        component={ManageScreen}
-        options={{ title: "Manage categories" }}
       />
     </Stack.Navigator>
   );

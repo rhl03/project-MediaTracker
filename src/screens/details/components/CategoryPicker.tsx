@@ -1,33 +1,28 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import type { Category } from "../../../domain/types";
+import { Popup } from "../../../components/Popup";
 import { colors } from "../../../theme/colors";
 import { radius } from "../../../theme/radius";
 import { spacing } from "../../../theme/spacing";
 import { height, opacity } from "../../../theme/height";
 import { fontSize, fontWeight } from "../../../theme/typography";
 
+// Border width of a chosen category box.
+const CHECKED_BORDER = 2;
+
 type Props = {
   visible: boolean;
   categories: ReadonlyArray<Category>;
-  // The categories the title is in now; the window starts from these.
+  // The categories the title is in now; the popup starts from these.
   checkedIds: ReadonlyArray<number>;
   onSave: (selectedIds: number[]) => void;
   onManage: () => void;
   onClose: () => void;
 };
 
-// The "Add to categories" window on Details: one long box per category, blue
-// when chosen. Taps only change the window; Save writes them, closing any
-// other way throws them away.
+// "Add to categories" on Details: taps only change the draft, Save writes it.
 export function CategoryPicker({
   visible,
   categories,
@@ -38,7 +33,7 @@ export function CategoryPicker({
 }: Props): React.JSX.Element {
   const [draft, setDraft] = useState<ReadonlySet<number>>(new Set());
 
-  // Every time the window opens, start again from what is saved.
+  // Every time the popup opens, start again from what is saved.
   useEffect(() => {
     if (visible) {
       setDraft(new Set(checkedIds));
@@ -58,98 +53,61 @@ export function CategoryPicker({
   }
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      statusBarTranslucent
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.card} onPress={() => {}}>
-          <Text style={styles.title}>Add to categories</Text>
-
-          <ScrollView
-            style={styles.list}
-            contentContainerStyle={styles.listContent}
-          >
-            {categories.map(category => {
-              const checked = draft.has(category.id);
-              return (
-                <Pressable
-                  key={category.id}
-                  style={({ pressed }) => [
-                    styles.option,
-                    checked && styles.optionChecked,
-                    pressed && styles.pressed,
-                  ]}
-                  onPress={() => toggle(category.id)}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      checked && styles.optionTextChecked,
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {category.name}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-
-          <View style={styles.buttons}>
+    <Popup visible={visible} title="Add to categories" onClose={onClose}>
+      <ScrollView
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+      >
+        {categories.map(category => {
+          const checked = draft.has(category.id);
+          return (
             <Pressable
+              key={category.id}
               style={({ pressed }) => [
-                styles.button,
-                styles.manage,
+                styles.option,
+                checked && styles.optionChecked,
                 pressed && styles.pressed,
               ]}
-              onPress={onManage}
+              onPress={() => toggle(category.id)}
             >
-              <Text style={styles.manageText}>Manage</Text>
+              <Text
+                style={[styles.optionText, checked && styles.optionTextChecked]}
+                numberOfLines={1}
+              >
+                {category.name}
+              </Text>
             </Pressable>
-            <Pressable
-              style={({ pressed }) => [
-                styles.button,
-                styles.save,
-                pressed && styles.pressed,
-              ]}
-              onPress={() => onSave([...draft])}
-            >
-              <Text style={styles.saveText}>Save</Text>
-            </Pressable>
-          </View>
+          );
+        })}
+      </ScrollView>
+
+      <View style={styles.buttons}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.manage,
+            pressed && styles.pressed,
+          ]}
+          onPress={onManage}
+        >
+          <Text style={styles.manageText}>Manage</Text>
         </Pressable>
-      </Pressable>
-    </Modal>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.save,
+            pressed && styles.pressed,
+          ]}
+          onPress={() => onSave([...draft])}
+        >
+          <Text style={styles.saveText}>Save</Text>
+        </Pressable>
+      </View>
+    </Popup>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: colors.scrim,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: spacing.xxl,
-  },
-  card: {
-    width: "100%",
-    maxWidth: 360,
-    maxHeight: "80%",
-    backgroundColor: colors.surface,
-    borderRadius: radius.xl,
-    padding: spacing.xl,
-  },
-  title: {
-    color: colors.text,
-    fontSize: fontSize.xxl,
-    fontWeight: fontWeight.bold,
-    textAlign: "center",
-    marginBottom: spacing.lg,
-  },
   list: {
     flexGrow: 0,
   },
@@ -161,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: spacing.lg,
     borderRadius: radius.xl,
-    borderWidth: 2,
+    borderWidth: CHECKED_BORDER,
     borderColor: "transparent",
     backgroundColor: colors.surface2,
   },

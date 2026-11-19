@@ -13,5 +13,4 @@ export type RootStackParamList = {
   Search: undefined;
   Details: { mediaType: MediaType; tmdbId: number };
   About: undefined;
-  Manage: undefined;
 };

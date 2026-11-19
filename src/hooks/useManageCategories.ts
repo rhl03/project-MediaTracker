@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReorderableListReorderEvent } from "react-native-reorderable-list";
-import type { Category } from "../../domain/types";
-import { canRemoveCategory, categoryNameError } from "../../domain/category";
+import type { Category } from "../domain/types";
+import { canRemoveCategory, categoryNameError } from "../domain/category";
 import {
   useAddCategory,
   useCategories,
@@ -9,9 +9,9 @@ import {
   useDeleteCategory,
   useMoveCategory,
   useRenameCategory,
-} from "../../hooks/libraryQueries";
+} from "./libraryQueries";
 
-// State and actions for the Manage screen: list, counts, add, rename, move, delete.
+// State and actions for managing categories: list, counts, add, rename, move, delete.
 export function useManageCategories() {
   const { data: categories = [] } = useCategories();
   const { data: counts = {} } = useCategoryCounts();

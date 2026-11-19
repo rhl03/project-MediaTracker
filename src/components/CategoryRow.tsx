@@ -3,15 +3,15 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import { useReorderableDrag } from "react-native-reorderable-list";
-import type { CategoryNameError } from "../../../domain/category";
-import type { Category } from "../../../domain/types";
-import { IconButton } from "../../../components/IconButton";
-import { RippleButton } from "../../../components/RippleButton";
-import { colors } from "../../../theme/colors";
-import { radius } from "../../../theme/radius";
-import { spacing } from "../../../theme/spacing";
-import { fontSize } from "../../../theme/typography";
-import { titleCount } from "../titleCount";
+import type { CategoryNameError } from "../domain/category";
+import { titleCount } from "../domain/categoryText";
+import type { Category } from "../domain/types";
+import { IconButton } from "./IconButton";
+import { RippleButton } from "./RippleButton";
+import { colors } from "../theme/colors";
+import { radius } from "../theme/radius";
+import { spacing } from "../theme/spacing";
+import { fontSize } from "../theme/typography";
 
 // How long the handle must be held before the row starts dragging.
 const DRAG_DELAY_MS = 150;
@@ -126,8 +126,8 @@ export function CategoryRow({
 const styles = StyleSheet.create({
   card: {
     marginBottom: spacing.sm,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    backgroundColor: colors.surface2,
+    borderRadius: radius.xl,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },

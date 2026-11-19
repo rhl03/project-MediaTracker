@@ -10,6 +10,7 @@ import type { RootStackParamList, TabParamList } from "../../navigation/types";
 import type { TrackedTitle } from "../../domain/types";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { CategoryTabs } from "../../components/CategoryTabs";
+import { ManageCategoriesPopup } from "../../components/ManageCategoriesPopup";
 import {
   useCategories,
   useRemoveTitles,
@@ -43,6 +44,7 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
   const removeTitles = useRemoveTitles();
   const resetTitles = useResetProgress();
   const [confirming, setConfirming] = useState<PendingAction | null>(null);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   function onPosterPress(title: TrackedTitle) {
     if (selecting) {
@@ -99,7 +101,7 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
         ) : (
           <SearchBar
             onPress={() => navigation.navigate("Search")}
-            onMenuPress={() => navigation.navigate("Manage")}
+            onMenuPress={() => setCategoriesOpen(true)}
           />
         )}
       </View>
@@ -138,6 +140,11 @@ export function LibraryScreen({ navigation }: Props): React.JSX.Element {
         tone={dialog.tone}
         onConfirm={runConfirmed}
         onCancel={() => setConfirming(null)}
+      />
+
+      <ManageCategoriesPopup
+        visible={categoriesOpen}
+        onClose={() => setCategoriesOpen(false)}
       />
     </SafeAreaView>
   );

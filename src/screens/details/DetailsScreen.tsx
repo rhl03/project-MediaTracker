@@ -36,6 +36,7 @@ import {
 import { CategoryTabs } from "../../components/CategoryTabs";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { IconButton } from "../../components/IconButton";
+import { ManageCategoriesPopup } from "../../components/ManageCategoriesPopup";
 import { colors } from "../../theme/colors";
 import { spacing } from "../../theme/spacing";
 import { AddButton } from "./components/AddButton";
@@ -76,6 +77,7 @@ export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
   const resetTitles = useResetProgress();
   const { mutate: updateTotal } = useUpdateTotalEpisodes();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [manageOpen, setManageOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirming, setConfirming] = useState<PendingAction | null>(null);
   const [seasonIndex, setSeasonIndex] = useState(0);
@@ -211,9 +213,16 @@ export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
     setPickerOpen(false);
   }
 
+  // Swaps the picker for the categories popup.
   function openManage() {
     setPickerOpen(false);
-    navigation.navigate("Manage");
+    setManageOpen(true);
+  }
+
+  // Back to the picker, so the new categories can be ticked right away.
+  function closeManage() {
+    setManageOpen(false);
+    setPickerOpen(true);
   }
 
   function runConfirmed() {
@@ -292,6 +301,8 @@ export function DetailsScreen({ navigation, route }: Props): React.JSX.Element {
         onManage={openManage}
         onClose={() => setPickerOpen(false)}
       />
+
+      <ManageCategoriesPopup visible={manageOpen} onClose={closeManage} />
 
       <DetailsMenu
         visible={menuOpen}
