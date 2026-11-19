@@ -1,11 +1,14 @@
 import * as React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
+import { MaterialIcons } from "@react-native-vector-icons/material-icons/static";
 import { colors } from "../../../theme/colors";
 import { spacing } from "../../../theme/spacing";
 import { fontSize, fontWeight } from "../../../theme/typography";
+import { ICON_GAP, ICON_SIZE } from "./SettingsRow";
 
 type Props = {
+  icon: React.ComponentProps<typeof MaterialIcons>["name"];
   title: string;
   min: number;
   max: number;
@@ -17,8 +20,9 @@ type Props = {
   onRelease: (value: number) => void;
 };
 
-// A setting with its current number on the right and a whole-number slider below.
+// A settings row with icon, title and number, and a whole-number slider under the title.
 export function SliderRow({
+  icon,
   title,
   min,
   max,
@@ -29,11 +33,13 @@ export function SliderRow({
 }: Props): React.JSX.Element {
   return (
     <View style={styles.row}>
-      <View style={styles.texts}>
+      <View style={styles.top}>
+        <MaterialIcons name={icon} size={ICON_SIZE} color={colors.primary} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.value}>{shownValue}</Text>
       </View>
       <Slider
+        style={styles.slider}
         minimumValue={min}
         maximumValue={max}
         step={1}
@@ -41,7 +47,7 @@ export function SliderRow({
         onValueChange={onSlide}
         onSlidingComplete={onRelease}
         minimumTrackTintColor={colors.primary}
-        maximumTrackTintColor={colors.surface3}
+        maximumTrackTintColor={colors.textMuted}
         thumbTintColor={colors.primary}
       />
     </View>
@@ -51,15 +57,16 @@ export function SliderRow({
 const styles = StyleSheet.create({
   row: {
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
   },
-  texts: {
+  top: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: spacing.sm,
+    gap: ICON_GAP,
   },
   title: {
+    flex: 1,
     color: colors.text,
     fontSize: fontSize.lg,
   },
@@ -67,5 +74,10 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontSize: fontSize.lg,
     fontWeight: fontWeight.bold,
+  },
+  // Starts under the title, not under the icon.
+  slider: {
+    marginLeft: ICON_SIZE + ICON_GAP,
+    marginTop: spacing.sm,
   },
 });

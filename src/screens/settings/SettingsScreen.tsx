@@ -14,6 +14,7 @@ import { colors } from "../../theme/colors";
 import { spacing } from "../../theme/spacing";
 import { fontSize, fontWeight } from "../../theme/typography";
 import { SectionHeader } from "./components/SectionHeader";
+import { SettingsCard } from "./components/SettingsCard";
 import { SettingsRow } from "./components/SettingsRow";
 import { SliderRow } from "./components/SliderRow";
 import { useSettings } from "./useSettings";
@@ -24,7 +25,7 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList>
 >;
 
-// Settings tab: every setting on one page in sections; only About opens a new page.
+// Settings tab: sections as rounded cards; only About opens a new page.
 export function SettingsScreen({ navigation }: Props): React.JSX.Element {
   const {
     categoriesOpen,
@@ -37,31 +38,37 @@ export function SettingsScreen({ navigation }: Props): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Settings</Text>
 
         <SectionHeader title="Library" />
-        <SliderRow
-          title="Posters per row"
-          min={MIN_POSTERS_PER_ROW}
-          max={MAX_POSTERS_PER_ROW}
-          value={savedPostersPerRow}
-          shownValue={shownPostersPerRow}
-          onSlide={slidePostersPerRow}
-          onRelease={releasePostersPerRow}
-        />
-        <SettingsRow
-          icon="category"
-          label="Categories"
-          onPress={() => setCategoriesOpen(true)}
-        />
+        <SettingsCard>
+          <SliderRow
+            icon="grid-view"
+            title="Posters per row"
+            min={MIN_POSTERS_PER_ROW}
+            max={MAX_POSTERS_PER_ROW}
+            value={savedPostersPerRow}
+            shownValue={shownPostersPerRow}
+            onSlide={slidePostersPerRow}
+            onRelease={releasePostersPerRow}
+          />
+          <SettingsRow
+            icon="category"
+            label="Categories"
+            summary="Add, rename, reorder and delete"
+            onPress={() => setCategoriesOpen(true)}
+          />
+        </SettingsCard>
 
         <SectionHeader title="App" />
-        <SettingsRow
-          icon="info-outline"
-          label="About"
-          onPress={() => navigation.navigate("About")}
-        />
+        <SettingsCard>
+          <SettingsRow
+            icon="info-outline"
+            label="About"
+            onPress={() => navigation.navigate("About")}
+          />
+        </SettingsCard>
       </ScrollView>
 
       <ManageCategoriesPopup
@@ -75,6 +82,10 @@ export function SettingsScreen({ navigation }: Props): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.xl,
   },
   title: {
     color: colors.text,

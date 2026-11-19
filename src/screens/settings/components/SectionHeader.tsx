@@ -4,7 +4,7 @@ import { colors } from "../../../theme/colors";
 import { spacing } from "../../../theme/spacing";
 import { fontSize, fontWeight } from "../../../theme/typography";
 
-// Small blue title above a group of settings, like Kotatsu's sections.
+// Small blue title above a settings card, lined up with the icons inside it.
 export function SectionHeader({ title }: { title: string }): React.JSX.Element {
   return <Text style={styles.header}>{title}</Text>;
 }

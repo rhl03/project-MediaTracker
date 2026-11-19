@@ -6,8 +6,11 @@ import { colors } from "../../../theme/colors";
 import { spacing } from "../../../theme/spacing";
 import { fontSize } from "../../../theme/typography";
 
-// Icon size in a settings row.
-const ICON_SIZE = 24;
+// Icon size in every settings row; SliderRow uses it to line up too.
+export const ICON_SIZE = 24;
+
+// Space between the icon and the text in every settings row.
+export const ICON_GAP = spacing.lg;
 
 type Props = {
   icon: React.ComponentProps<typeof MaterialIcons>["name"];
@@ -17,7 +20,7 @@ type Props = {
   onPress: () => void;
 };
 
-// One settings row like Kotatsu's: icon, label and an optional summary, no arrow.
+// One tappable settings row inside a card: icon, label and an optional summary.
 export function SettingsRow({
   icon,
   label,
@@ -26,7 +29,7 @@ export function SettingsRow({
 }: Props): React.JSX.Element {
   return (
     <RippleButton onPress={onPress} contentStyle={styles.row}>
-      <MaterialIcons name={icon} size={ICON_SIZE} color={colors.textMuted} />
+      <MaterialIcons name={icon} size={ICON_SIZE} color={colors.primary} />
       <View style={styles.texts}>
         <Text style={styles.label}>{label}</Text>
         {summary !== undefined && <Text style={styles.summary}>{summary}</Text>}
@@ -39,7 +42,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.xl,
+    gap: ICON_GAP,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.lg,
   },
